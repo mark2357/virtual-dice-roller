@@ -1,0 +1,50 @@
+.buttons-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
+    flex-wrap: wrap;
+    max-height: 100%;
+}
+
+.root-buttons-container {
+    position: absolute;
+    top: 1em;
+    left: 1em;
+    bottom: 1em;
+
+}
+
+.hidable-buttons-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
+    flex-wrap: wrap;
+    max-height: 100%;
+    right: 0em;
+    transition: right 0.5s ease;
+    position: relative;
+}
+
+
+.dice-button {
+    font-size: 1.5em;
+    border-radius: 0.5em;
+    background: white;
+    border: 0.2em solid #09C;
+    color:#09C;
+    width: 3em;
+    height: 3em;
+    margin: 0.2em;
+    transition: color 0.3s, background 0.3s;
+}
+
+.hidable-buttons-container.hidden {
+    right: 6em;
+}
+
+button:hover {
+    background: #09C;
+    color: white;
+}
