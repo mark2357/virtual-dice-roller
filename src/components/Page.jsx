@@ -141,7 +141,7 @@ export default class Page extends Component {
 
         // reflection texture
 
-        let reflectionTexture = new BABYLON.CubeTexture("/assets/skybox/skybox", this.scene);
+        let reflectionTexture = new BABYLON.CubeTexture("/assets/textures/skybox/skybox", this.scene);
 
         // applies reflection texture to all materials in scene
         this.scene.materials.forEach((material) => {
@@ -152,7 +152,7 @@ export default class Page extends Component {
 
 
         // skybox
-        let skyboxTexture = new BABYLON.CubeTexture("/assets/skybox/skybox", this.scene);
+        let skyboxTexture = new BABYLON.CubeTexture("/assets/textures/skybox/skybox", this.scene);
         // let skyboxTexture = new BABYLON.HDRCubeTexture("/assets/cayley_interior_8k.hdr", this.scene, 1024);
 
 

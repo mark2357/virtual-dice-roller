@@ -1,6 +1,8 @@
 let webpack = require('webpack');
 let path = require('path');
 
+const CopyPlugin = require('copy-webpack-plugin');
+
 let parentDir = path.join(__dirname, '../');
 
 module.exports = {
@@ -33,4 +35,10 @@ module.exports = {
     node: {
         fs: 'empty'
     },
+    plugins: [
+    new CopyPlugin([
+        { from: 'index.html', to: 'index.html' },
+        { from: 'assets', to: 'assets' },
+      ]),
+    ],
 }
