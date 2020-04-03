@@ -18,6 +18,14 @@
     align-items: center;
 }
 
+@media only screen and (orientation: portrait) {
+    .result-panel {
+        left: 10%;
+        width: 80%;
+    }
+}
+
+
 .result-panel.hidden {
     bottom: -5em;
 }
@@ -36,4 +44,9 @@
 .result {
     flex-grow: 1;
     padding-left: 2em;
+}
+
+.text-container {
+    max-height: 5em;
+    overflow: auto;
 }

@@ -1,34 +1,30 @@
-.buttons-container {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    flex-direction: column;
-    flex-wrap: wrap;
-    max-height: 100%;
-}
-
-.root-buttons-container {
+.dice-buttons {
     position: absolute;
     top: 1em;
     left: 1em;
     bottom: 1em;
+    pointer-events: none;
+}
 
+.hide-show-button {
+    position: relative;
 }
 
 .hidable-buttons-container {
+    position: absolute;
+    bottom: 6em;
+    top: 5em;
     display: flex;
     align-items: center;
     justify-content: flex-start;
     flex-direction: column;
     flex-wrap: wrap;
-    max-height: 100%;
     right: 0em;
     transition: right 0.5s ease;
-    position: relative;
 }
 
-
 .dice-button {
+    pointer-events: all;
     font-size: 1.5em;
     border-radius: 0.5em;
     background: white;
@@ -40,8 +36,23 @@
     transition: color 0.3s, background 0.3s;
 }
 
+
 .hidable-buttons-container.hidden {
     right: 6em;
+}
+@media only screen and (max-height: 54em) {
+    .hidable-buttons-container.hidden {
+        right: 11em;
+    }
+    
+}
+@media only screen and (max-height: 35em) {
+    .hidable-buttons-container.hidden {
+        right: 16em;
+    }
+    /* .dice-button {
+        background-color: green;
+    } */
 }
 
 button:hover {

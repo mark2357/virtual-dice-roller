@@ -49,6 +49,7 @@ export default class Page extends Component {
         this.scene = null;
         this.currentDiceRollNumber = -1;
         this.advancedTexture = null;
+        this.shadowGenerator = null;
         this.diceRollTotalCounter = new DiceRollTotalCounter(this.getDiceInstanceArray, this.getCurrentDiceRollNumber, this.displayRollResult);
     }
 
@@ -91,6 +92,8 @@ export default class Page extends Component {
 
         this.createCamera(canvas);
 
+        this.setupMaterials();
+
         this.createSkybox();
 
         this.createLightsAndShadows();
@@ -117,6 +120,7 @@ export default class Page extends Component {
         let camera = new BABYLON.ArcRotateCamera("camera1", 0, 0.6, 8, new BABYLON.Vector3(0, 0, 0), this.scene);
 
         // camera.panningSensibility = 0;
+        camera.pinchPrecision = 100;
         camera.wheelPrecision = 100;
         camera.lowerRadiusLimit = 1;
         camera.upperRadiusLimit = 20;
@@ -134,6 +138,18 @@ export default class Page extends Component {
 
     /**
      * @description
+     * as the exporter unnecessarily bakes multi materials some cleanup is needed 
+     */
+    setupMaterials = () => {
+        this.scene.materials.forEach((material) => {
+            if(material.name === 'Dice Material') {
+                material.albedoColor = new BABYLON.Color3(1, 0, 0);
+            }
+        });
+    }
+
+    /**
+     * @description
      * creates skybox and reflection texture for each material
      */
     createSkybox = () => {
@@ -141,18 +157,20 @@ export default class Page extends Component {
 
         // reflection texture
 
-        let reflectionTexture = new BABYLON.CubeTexture("/assets/textures/skybox/skybox", this.scene);
+        let reflectionTexture = new BABYLON.CubeTexture("/assets/textures/skybox_sml/skybox", this.scene);
+        reflectionTexture.coordinatesMode = BABYLON.Texture.CUBIC_MODE;
 
         // applies reflection texture to all materials in scene
         this.scene.materials.forEach((material) => {
-            material.reflectionTexture = reflectionTexture;
-            material.reflectionTexture.coordinatesMode = BABYLON.Texture.CUBIC_MODE;
+            if(['Dice Material', 'Wood'].includes(material.name)) {
+                material.reflectionTexture = reflectionTexture;
+            }
         });
 
 
 
         // skybox
-        let skyboxTexture = new BABYLON.CubeTexture("/assets/textures/skybox/skybox", this.scene);
+        let skyboxTexture = new BABYLON.CubeTexture("/assets/textures/skybox_sml/skybox", this.scene);
         // let skyboxTexture = new BABYLON.HDRCubeTexture("/assets/cayley_interior_8k.hdr", this.scene, 1024);
 
 
@@ -178,10 +196,13 @@ export default class Page extends Component {
         let directionalLight = this.scene.lights[0];
         if (directionalLight !== null && directionalLight !== undefined) {
 
+            this.shadowGenerator = new BABYLON.ShadowGenerator(512, directionalLight);
+            this.shadowGenerator.bias = 0.02;
+            this.shadowGenerator.usePoissonSampling = true;           
+            this.shadowGenerator.filteringQuality = BABYLON.ShadowGenerator.QUALITY_HIGH;
+            // this.shadowGenerator.usePercentageCloserFiltering = true;
             directionalLight.autoCalcShadowZBounds = true;
             directionalLight.intensity = 2;
-            this.shadowGenerator = directionalLight.getShadowGenerator();
-            this.shadowGenerator.usePercentageCloserFiltering = true;
         }
     }
     
@@ -262,7 +283,8 @@ export default class Page extends Component {
      * @param {Boolean} includeDescendants 
      */
     addShadowCaster(mesh, includeDescendants) {
-        this.shadowGenerator.addShadowCaster(mesh, includeDescendants);
+        if(this.shadowGenerator !== null)
+            this.shadowGenerator.addShadowCaster(mesh, includeDescendants);
     }
 
 
@@ -275,15 +297,20 @@ export default class Page extends Component {
     handleButtonOnClick = (diceSides, numberOfDice) => {
         this.diceRollTotalCounter.stopChecking();
 
+        
+        // remove old dice
         this.diceInstanceArray.forEach(diceInstance => {
             diceInstance.dispose();
         });
         this.diceInstanceArray = [];
+        
+        // create new dice
         this.currentDiceRollNumber = diceSides;
-
         for (let i = 0; i < numberOfDice; i++) {
             this.createDiceInstance(diceSides);
         }
+        
+        this.setState({resultPanelVisible: false});
 
         this.diceRollTotalCounter.startChecking();
     }
@@ -434,21 +461,16 @@ export default class Page extends Component {
         
         const { diceRollArray, resultPanelVisible } = this.state;
 
-        const orderedArray = [...diceRollArray].sort((a, b) => {
-            if(a === b) return 0;
-            else if(a > b) return 1;
-            else return -1;
-        });
 
         let resultText = '[';
         let totalRoll = 0;
-        for(let i = 0; i < orderedArray.length; i++) {
-            const roll = orderedArray[i];
+        for(let i = 0; i < diceRollArray.length; i++) {
+            const roll = diceRollArray[i];
 
             totalRoll += roll;
 
-            resultText += `${roll}/${this.currentDiceRollNumber}`;
-            if(i < orderedArray.length - 1) resultText += ', ';
+            resultText += `${roll}`;
+            if(i < diceRollArray.length - 1) resultText += ', ';
         }
 
         resultText += `] Total: ${totalRoll}`;

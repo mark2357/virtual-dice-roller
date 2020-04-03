@@ -67,7 +67,7 @@ export default class DiceButtons extends Component {
 
         const { customNumber, buttonsHidden } = this.state;
         return (
-            <div className='root-buttons-container buttons-container'>
+            <div className='dice-buttons'>
                 {/* <div className='single-dice'>
                     <button onClick={() => { this.handleRollDiceClick(4, 1) }}>D4</button>
                     <button onClick={() => { this.handleRollDiceClick(6, 1) }}>D6</button>
@@ -85,7 +85,7 @@ export default class DiceButtons extends Component {
                     <button onClick={() => { this.handleRollDiceClick(20, 2) }}>2 D20</button>
                 </div> */}
                 {/* <div className='custom-number'> */}
-                <button className='dice-button' onClick={this.handleChangeVisibilityClick}>
+                <button className='dice-button hide-show-button' onClick={this.handleChangeVisibilityClick}>
                     {buttonsHidden ? '>' : '<'}
                 </button>
                     <div className={`hidable-buttons-container${buttonsHidden ? ' hidden' : ''}`}>

@@ -16,7 +16,9 @@ export default class ResultPanel extends Component {
         return (
             <div className={`result-panel ${resultPanelVisible ? '' : 'hidden'}`}>
                 <div className='result'>
-                    <span>{resultText}</span>
+                    <div className='text-container'>
+                        {resultText}
+                    </div>
                 </div>
                 <div className='result-close' onClick={hideResultPanel}>
                     <span>x</span>
