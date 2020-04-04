@@ -65,7 +65,7 @@ export default class Page extends Component {
         let scene = null;
 
         let pro = new Promise((resolve, reject) => {
-            BABYLON.SceneLoader.Load("", "./assets/Scene.babylon", engine, function (newScene) {
+            BABYLON.SceneLoader.Load("./assets/", "Scene.babylon", engine, function (newScene) {
                 scene = newScene
                 resolve();
             }, null, (scene, msg, exc) => {
@@ -157,7 +157,7 @@ export default class Page extends Component {
 
         // reflection texture
 
-        let reflectionTexture = new BABYLON.CubeTexture("/assets/textures/skybox_sml/skybox", this.scene);
+        let reflectionTexture = new BABYLON.CubeTexture("./assets/textures/skybox_sml/skybox", this.scene);
         reflectionTexture.coordinatesMode = BABYLON.Texture.CUBIC_MODE;
 
         // applies reflection texture to all materials in scene
@@ -170,7 +170,7 @@ export default class Page extends Component {
 
 
         // skybox
-        let skyboxTexture = new BABYLON.CubeTexture("/assets/textures/skybox_sml/skybox", this.scene);
+        let skyboxTexture = new BABYLON.CubeTexture("./assets/textures/skybox_sml/skybox", this.scene);
         // let skyboxTexture = new BABYLON.HDRCubeTexture("/assets/cayley_interior_8k.hdr", this.scene, 1024);
 
 

@@ -38,7 +38,9 @@ module.exports = {
     plugins: [
     new CopyPlugin([
         { from: 'index.html', to: 'index.html' },
-        { from: 'assets', to: 'assets' },
+        { from: 'assets/textures', to: 'assets/textures' },
+        { from: 'assets/Scene.babylon', to: 'assets/Scene.babylon' },
+        { from: 'assets/Scene.babylon.manifest', to: 'assets/Scene.babylon.manifest' },
       ]),
     ],
 }
