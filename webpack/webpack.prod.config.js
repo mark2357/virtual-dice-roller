@@ -2,6 +2,7 @@ let webpack = require('webpack');
 let path = require('path');
 
 const CopyPlugin = require('copy-webpack-plugin');
+const WorkboxPlugin = require('workbox-webpack-plugin');
 
 let parentDir = path.join(__dirname, '../');
 
@@ -36,11 +37,17 @@ module.exports = {
         fs: 'empty'
     },
     plugins: [
-    new CopyPlugin([
-        { from: 'index.html', to: 'index.html' },
-        { from: 'assets/textures', to: 'assets/textures' },
-        { from: 'assets/Scene.babylon', to: 'assets/Scene.babylon' },
-        { from: 'assets/Scene.babylon.manifest', to: 'assets/Scene.babylon.manifest' },
-      ]),
+        new CopyPlugin([
+            { from: 'index.html', to: 'index.html' },
+            { from: 'assets/textures', to: 'assets/textures' },
+            { from: 'assets/Scene.babylon', to: 'assets/Scene.babylon' },
+            { from: 'assets/Scene.babylon.manifest', to: 'assets/Scene.babylon.manifest' },
+        ]),
+        new WorkboxPlugin.GenerateSW({
+            // these options encourage the ServiceWorkers to get in there fast
+            // and not allow any straggling "old" SWs to hang around
+            clientsClaim: true,
+            skipWaiting: true,
+        }),
     ],
 }

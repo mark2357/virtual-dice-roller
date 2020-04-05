@@ -7,8 +7,20 @@ import App from './components/App.jsx';
 
 //load font awesome icons
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faChevronLeft, faChevronRight, faTimes, faPlus, faMinus} from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft, faChevronRight, faTimes, faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 library.add(faChevronLeft, faChevronRight, faTimes, faPlus, faMinus);
 
+//setup service worker
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js').then(registration => {
+            console.log('SW registered: ', registration);
+        }).catch(registrationError => {
+            console.log('SW registration failed: ', registrationError);
+        });
+    });
+}
+else console.log('SW registration failed, no service worker in navigator');
 
-ReactDOM.render(<App />, document.getElementById('app'))
+
+ReactDOM.render(<App />, document.getElementById('app'));
