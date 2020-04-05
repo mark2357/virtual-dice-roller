@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import '../css/resultPanel.css';
 
 
@@ -21,7 +21,7 @@ export default class ResultPanel extends Component {
                     </div>
                 </div>
                 <div className='result-close' onClick={hideResultPanel}>
-                    <span>x</span>
+                    <span><FontAwesomeIcon icon='times'/></span>
                 </div>
             </div>
         );

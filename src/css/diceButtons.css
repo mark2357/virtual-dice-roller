@@ -3,44 +3,43 @@
     top: 1em;
     left: 1em;
     bottom: 1em;
+    right: 1em;
     pointer-events: none;
+    display: flex;
+
+flex-direction: column;
+}
+
+.buttons-container {
+    position: relative;
+    flex-grow: 1;
 }
 
 .hide-show-button {
     position: relative;
 }
 
+.dice-button {
+    float: left;
+}
+
 .hidable-buttons-container {
     position: absolute;
-    bottom: 6em;
-    top: 5em;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: flex-start;
     flex-direction: column;
+    transition: left 0.5s ease;
+    bottom: 0em;
+    top: 0em;
+    left: -0em;
     flex-wrap: wrap;
-    right: 0em;
-    transition: right 0.5s ease;
 }
 
-.dice-button {
-    pointer-events: all;
-    font-size: 1.5em;
-    border-radius: 0.5em;
-    background: white;
-    border: 0.2em solid #09C;
-    color:#09C;
-    width: 3em;
-    height: 3em;
-    margin: 0.2em;
-    transition: color 0.3s, background 0.3s;
-}
-
-
-.hidable-buttons-container.hidden {
-    right: 6em;
-}
-@media only screen and (max-height: 54em) {
+/* .hidable-buttons-container.hidden {
+    left: -6em;
+} */
+/* @media only screen and (max-height: 54em) {
     .hidable-buttons-container.hidden {
         right: 11em;
     }
@@ -50,12 +49,7 @@
     .hidable-buttons-container.hidden {
         right: 16em;
     }
-    /* .dice-button {
+    .dice-button {
         background-color: green;
-    } */
-}
-
-button:hover {
-    background: #09C;
-    color: white;
-}
+    }
+} */

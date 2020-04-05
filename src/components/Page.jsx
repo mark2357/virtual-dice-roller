@@ -484,9 +484,9 @@ export default class Page extends Component {
                     onClick={this.handleButtonOnClick}
                 />
                 <ResultPanel
-                resultText={resultText}
-                resultPanelVisible={resultPanelVisible}
-                hideResultPanel={this.hideResultPanel}
+                    resultText={resultText}
+                    resultPanelVisible={resultPanelVisible}
+                    hideResultPanel={this.hideResultPanel}
                 />
             </div>
         );
