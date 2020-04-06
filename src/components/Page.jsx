@@ -8,7 +8,7 @@ import "@babylonjs/inspector";
 import { AmmoJSPlugin } from '@babylonjs/core';
 import * as Ammo from '../../assets/ammo';
 
-import '../css/Page.css';
+import '../css/Page.scss';
 
 import DiceButtons from './DiceButtons';
 import Scene from './Scene';
@@ -16,6 +16,7 @@ import Scene from './Scene';
 import calcRandomVectorBetween from '../helpers/calcRandomVectorBetween';
 import DiceRollTotalCounter from '../DiceRollTotalCounter';
 import ResultPanel from './ResultPanel';
+import CustomDiceRolls from './CustomDiceRolls';
 
 export default class Page extends Component {
 
@@ -471,6 +472,8 @@ export default class Page extends Component {
                 />
                 <DiceButtons
                     onClick={this.handleButtonOnClick}
+                />
+                <CustomDiceRolls
                 />
                 <ResultPanel
                     resultText={resultText}

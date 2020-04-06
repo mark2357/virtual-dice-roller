@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import '../css/app.css';
+import '../css/app.scss';
 
 import Page from './Page.jsx';
 

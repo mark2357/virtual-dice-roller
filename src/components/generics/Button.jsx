@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 
-import '../../css/generics/button.css';
+import '../../css/generics/button.scss';
 
 export const Button = (props) => {
     const { className, children, onClick } = props;

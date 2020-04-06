@@ -17,8 +17,15 @@ module.exports = {
                 loader: 'babel-loader'
             },
             {
-                test: /\.css$/,
-                loaders: ["style-loader", "css-loader", "less-loader"]
+                test: /\.s[ac]ss$/i,
+                loaders: [
+                    // Creates `style` nodes from JS strings
+                    'style-loader',
+                    // Translates CSS into CommonJS
+                    'css-loader',
+                    // Compiles Sass to CSS
+                    'sass-loader',
+                ],
             }
         ]
     },

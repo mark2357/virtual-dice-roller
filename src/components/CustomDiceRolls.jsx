@@ -3,16 +3,15 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import '../css/diceButtons.scss';
+import '../css/customDiceRolls.scss';
 import { Button } from './generics/Button';
 
-export default class DiceButtons extends Component {
+export default class CustomDiceRolls extends Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
-            customNumber: 3, // the custom number of dice to roll
             buttonsHidden: false,
             buttonsWidth: 0, // the buttons width in px
         }
@@ -52,30 +51,6 @@ export default class DiceButtons extends Component {
     }
 
     /**
-     * @description handles changes in the number of dice being rolled
-     * @param {boolean} increase 
-     */
-    handleCustomNumberChangeClick = (increase) => {
-        const { customNumber } = this.state;
-
-        let newCustomNumber = customNumber;
-        if (increase) {
-            newCustomNumber++;
-            this.setState({ customNumber: customNumber + 1 });
-        }
-        else {
-            newCustomNumber--;
-            this.setState({ customNumber: customNumber - 1 });
-        }
-        if (newCustomNumber < 1)
-            newCustomNumber = 1;
-        else if (newCustomNumber > 50)
-            newCustomNumber = 50;
-
-        this.setState({ customNumber: newCustomNumber });
-    }
-
-    /**
      * @description handles the change in button visibility
      */
     handleChangeVisibilityClick = () => {
@@ -94,7 +69,7 @@ export default class DiceButtons extends Component {
             return {};
         }
         else {
-            return { left: `calc(${-buttonsWidth}px - 1em)` };
+            return { right: `calc(${-buttonsWidth}px - 1em)` };
         }
     }
 
@@ -103,22 +78,17 @@ export default class DiceButtons extends Component {
      */
     render() {
 
-        const { customNumber, buttonsHidden } = this.state;
+        const { buttonsHidden } = this.state;
         return (
-            <div className='dice-buttons'>
+            <div className='custom-dice-rolls'>
                 <Button className='hide-show-button dice-button' onClick={this.handleChangeVisibilityClick}>
-                    {buttonsHidden ? <FontAwesomeIcon icon='chevron-right' /> : <FontAwesomeIcon icon='chevron-left' />}
+                    {buttonsHidden ? <FontAwesomeIcon icon='chevron-left' /> : <FontAwesomeIcon icon='chevron-right' />}
                 </Button>
                 <div className='buttons-container'>
                     <div ref={this.hidableButtonRef} className='hidable-buttons-container' style={this.getOffset()}>
-                        <Button className='dice-button' onClick={() => { this.handleCustomNumberChangeClick(true); }}><FontAwesomeIcon icon='plus' /></Button>
-                        <Button className='dice-button' onClick={() => { this.handleCustomNumberChangeClick(false); }}><FontAwesomeIcon icon='minus' /></Button>
-                        <Button className='dice-button' onClick={() => { this.handleRollDiceClick(4, customNumber) }}>{customNumber} D4</Button>
-                        <Button className='dice-button' onClick={() => { this.handleRollDiceClick(6, customNumber) }}>{customNumber} D6</Button>
-                        <Button className='dice-button' onClick={() => { this.handleRollDiceClick(8, customNumber) }}>{customNumber} D8</Button>
-                        <Button className='dice-button' onClick={() => { this.handleRollDiceClick(10, customNumber) }}>{customNumber} D10</Button>
-                        <Button className='dice-button' onClick={() => { this.handleRollDiceClick(12, customNumber) }}>{customNumber} D12</Button>
-                        <Button className='dice-button' onClick={() => { this.handleRollDiceClick(20, customNumber) }}>{customNumber} D20</Button>
+                        <Button className='dice-button' onClick={() => {  }}><FontAwesomeIcon icon='plus' /></Button>
+                        <Button className='dice-button' onClick={() => {  }}><FontAwesomeIcon icon='edit' /></Button>
+                        <Button className='dice-button' onClick={() => {  }}><FontAwesomeIcon icon='edit' /></Button>
                     </div>
                 </div>
             </div>
@@ -126,6 +96,6 @@ export default class DiceButtons extends Component {
     }
 }
 
-DiceButtons.propTypes = {
+CustomDiceRolls.propTypes = {
     onClick: PropTypes.func.isRequired,
 };

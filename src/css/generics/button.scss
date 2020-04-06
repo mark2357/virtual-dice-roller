@@ -9,9 +9,8 @@
     margin: 0.2em;
     transition: color 0.3s, background 0.3s;
     cursor: pointer;
-}
-
-.button:hover {
-    background: #09C;
-    color: white;
+    &:hover {
+        background: #09C;
+        color: white;
+    }
 }

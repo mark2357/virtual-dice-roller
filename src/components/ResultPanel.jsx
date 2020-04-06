@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import '../css/resultPanel.css';
+import '../css/resultPanel.scss';
 
 
 export default class ResultPanel extends Component {
