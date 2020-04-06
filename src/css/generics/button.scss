@@ -4,13 +4,22 @@
     background: white;
     border: 0.2em solid #09C;
     color:#09C;
-    width: 3.6em;
-    height: 3.6em;
+    width: 4em;
+    height: 3.8em;
     margin: 0.2em;
     transition: color 0.3s, background 0.3s;
     cursor: pointer;
     &:hover {
         background: #09C;
         color: white;
+        span {
+            color: white;
+        }
+    }
+    &.button-long {
+        width: 12em;
+    }
+    &.half-height {
+        height: 2em;
     }
 }

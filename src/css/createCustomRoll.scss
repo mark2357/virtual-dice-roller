@@ -1,0 +1,90 @@
+.create-custom-roll {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #00000055;
+
+    span {
+        color: #09c;
+    }
+
+    hr {
+        color: #09c;
+        width: 95%;
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+
+    .create-custom-roll-panel {
+        position: relative;
+        width: 90%;
+        height: 90%;
+        max-width: 40em;
+        max-height: 40em;
+
+        background: white;
+        border: 0.2em solid #09c;
+        border-radius: 1em;
+        display: flex;
+        flex-direction: column;
+
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #09c;
+        }
+        .content-container {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+
+            .name-wrapper {
+                flex-grow: 1;
+				display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+
+                .name-input {
+                    color: #09c;
+                    border-radius: 0.2em;
+                }
+            }
+            .counter-wrapper {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: row;
+                flex-wrap: wrap;
+                // flex-grow: 2;
+            }
+            .output-range-wrapper {
+				flex-grow: 1;
+				display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+			}
+        }
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0.5em;
+
+            .icon-wrapper {
+                > span {
+                    padding-right: 0.5em;
+                }
+            }
+        }
+    }
+}

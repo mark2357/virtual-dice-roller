@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import '../css/customDiceRolls.scss';
 import { Button } from './generics/Button';
+import { CustomRollsDataProps } from '../propTypes/CustomRollsDataProps';
 
 export default class CustomDiceRolls extends Component {
 
@@ -40,13 +41,12 @@ export default class CustomDiceRolls extends Component {
     /**
      * @description
      * calls the onClick function if provided
-     * @param {number} diceSides
-     * @param {number} numberOfDice
+     * @param {Array<number>} diceRollArray
+     * @param {string} customResultCalculation
      */
-    handleRollDiceClick = (diceSides, numberOfDice) => {
-        if (this.props !== null && typeof this.props.onClick === 'function') {
-            const diceRollArray = Array(numberOfDice).fill(diceSides);
-            this.props.onClick(diceRollArray);
+    handleRollDiceClick = (diceRollArray, customResultCalculation) => {
+        if (this.props !== null && typeof this.props.onDiceRollClick === 'function') {
+            this.props.onDiceRollClick(diceRollArray, customResultCalculation);
         }
     }
 
@@ -77,18 +77,33 @@ export default class CustomDiceRolls extends Component {
      * @inheritdoc
      */
     render() {
-
         const { buttonsHidden } = this.state;
+        const { onEditCustomDiceRollClick, customRollsData } = this.props;
+
+        const customRollsButtons = [];
+        customRollsData.forEach(customRollData => {
+            customRollsButtons.push(
+                <Button
+                    className='button-long'
+                    onClick={() => { this.handleRollDiceClick(customRollData.diceRollArray, customRollData.customResultCalculation); }}
+                >
+                    <span>{customRollData.name}</span>
+                </Button>
+            );
+        });
+
         return (
             <div className='custom-dice-rolls'>
-                <Button className='hide-show-button dice-button' onClick={this.handleChangeVisibilityClick}>
+                <Button className='hide-show-button' onClick={this.handleChangeVisibilityClick}>
                     {buttonsHidden ? <FontAwesomeIcon icon='chevron-left' /> : <FontAwesomeIcon icon='chevron-right' />}
                 </Button>
                 <div className='buttons-container'>
                     <div ref={this.hidableButtonRef} className='hidable-buttons-container' style={this.getOffset()}>
-                        <Button className='dice-button' onClick={() => {  }}><FontAwesomeIcon icon='plus' /></Button>
-                        <Button className='dice-button' onClick={() => {  }}><FontAwesomeIcon icon='edit' /></Button>
-                        <Button className='dice-button' onClick={() => {  }}><FontAwesomeIcon icon='edit' /></Button>
+                        <Button className='button-long' onClick={() => { this.handleRollDiceClick([20, 20], 'MAX(@D, @D)'); }}><span>Roll Advantage</span></Button>
+                        <Button className='button-long' onClick={() => { this.handleRollDiceClick([20, 20], 'MIN(@D, @D)'); }}><span>Roll Disadvantage</span></Button>
+                        {customRollsButtons}
+                        <Button className='dice-button' onClick={() => { onEditCustomDiceRollClick(-1); }}><FontAwesomeIcon icon='plus' /></Button>
+                        {/* <Button className='dice-button' onClick={() => { this.onEditCustomDiceRollClick(0); }}><FontAwesomeIcon icon='edit' /></Button> */}
                     </div>
                 </div>
             </div>
@@ -97,5 +112,7 @@ export default class CustomDiceRolls extends Component {
 }
 
 CustomDiceRolls.propTypes = {
-    onClick: PropTypes.func.isRequired,
+    onDiceRollClick: PropTypes.func.isRequired,
+    onEditCustomDiceRollClick: PropTypes.func.isRequired,
+    customRollsData: PropTypes.arrayOf(CustomRollsDataProps),
 };

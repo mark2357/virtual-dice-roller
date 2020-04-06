@@ -7,8 +7,8 @@ import App from './components/App.jsx';
 
 //load font awesome icons
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faChevronLeft, faChevronRight, faTimes, faPlus, faMinus, faEdit} from '@fortawesome/free-solid-svg-icons';
-library.add(faChevronLeft, faChevronRight, faTimes, faPlus, faMinus, faEdit);
+import { faChevronLeft, faChevronRight, faChevronUp, faChevronDown, faTimes, faPlus, faMinus, faEdit, faSave} from '@fortawesome/free-solid-svg-icons';
+library.add(faChevronLeft, faChevronRight, faChevronUp, faChevronDown, faTimes, faPlus, faMinus, faEdit, faSave);
 
 //setup service worker
 if ('serviceWorker' in navigator) {

@@ -169,7 +169,8 @@ export default class DiceRollTotalCounter {
 
     /**
     * @description
-    * determines the roll of each dice 
+    * determines the roll of each dice
+    * @returns {Array<number>}
     */
     _determineDiceRoll = () => {
         const diceArray = this.getDiceArray();

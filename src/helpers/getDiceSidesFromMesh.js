@@ -6,7 +6,6 @@ import * as BABYLON from '@babylonjs/core';
  * @returns {number | null} 
  */
 const getDiceSidesFromMesh = (mesh) => {
-    console.log(BABYLON.Tags.GetTags(mesh));
     const tags = BABYLON.Tags.GetTags(mesh);
     switch (tags) {
         case 'D4':

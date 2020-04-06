@@ -4,7 +4,6 @@ import * as GUI from '@babylonjs/gui';
 import "@babylonjs/core/Debug/debugLayer";
 import "@babylonjs/inspector";
 
-// import * as Cannon from 'cannon';
 import { AmmoJSPlugin } from '@babylonjs/core';
 import * as Ammo from '../../assets/ammo';
 
@@ -12,11 +11,14 @@ import '../css/Page.scss';
 
 import DiceButtons from './DiceButtons';
 import Scene from './Scene';
-
-import calcRandomVectorBetween from '../helpers/calcRandomVectorBetween';
 import DiceRollTotalCounter from '../DiceRollTotalCounter';
 import ResultPanel from './ResultPanel';
 import CustomDiceRolls from './CustomDiceRolls';
+import CreateCustomRoll from './CreateCustomRoll';
+
+import calcRandomVectorBetween from '../helpers/calcRandomVectorBetween';
+import calculateCustomDiceRollResult from '../helpers/calculateCustomDiceRollResult';
+
 
 export default class Page extends Component {
 
@@ -26,6 +28,10 @@ export default class Page extends Component {
         this.state = {
             diceRollArray: [],
             resultPanelVisible: false,
+            resultText: '',
+            displayCustomRollPanel: false,
+            currentlyEditingCustomRollIndex: -1, // -1 for new
+            customRollsData: [],
         }
 
         this.dice = {
@@ -46,6 +52,7 @@ export default class Page extends Component {
                 D20: null,
             }
         };
+        this.customResultCalculation = null; //string value or null, should be null when standard dice calculation is used
         this.diceInstanceArray = [];
         this.scene = null;
         this.advancedTexture = null;
@@ -142,7 +149,7 @@ export default class Page extends Component {
      */
     setupMaterials = () => {
         this.scene.materials.forEach((material) => {
-            if(material.name === 'Dice Material') {
+            if (material.name === 'Dice Material') {
                 material.albedoColor = new BABYLON.Color3(1, 0, 0);
             }
         });
@@ -162,7 +169,7 @@ export default class Page extends Component {
 
         // applies reflection texture to all materials in scene
         this.scene.materials.forEach((material) => {
-            if(['Dice Material', 'Wood'].includes(material.name)) {
+            if (['Dice Material', 'Wood'].includes(material.name)) {
                 material.reflectionTexture = reflectionTexture;
             }
         });
@@ -198,79 +205,79 @@ export default class Page extends Component {
 
             this.shadowGenerator = new BABYLON.ShadowGenerator(512, directionalLight);
             this.shadowGenerator.bias = 0.02;
-            this.shadowGenerator.usePoissonSampling = true;           
+            this.shadowGenerator.usePoissonSampling = true;
             this.shadowGenerator.filteringQuality = BABYLON.ShadowGenerator.QUALITY_HIGH;
             // this.shadowGenerator.usePercentageCloserFiltering = true;
             directionalLight.autoCalcShadowZBounds = true;
             directionalLight.intensity = 2;
         }
     }
-    
+
     /** 
      * @description
      * adds dice mesh to arrays and adds physics to the walls and floor
      */
-   processMeshes = () => {
-    this.scene.meshes.forEach((mesh) => {
-        switch (mesh.name) {
-            case 'D4 Dice':
-                this.dice.mesh.D4 = mesh;
-                mesh.isVisible = false;
-                break;
-            case 'D6 Dice':
-                this.dice.mesh.D6 = mesh;
-                mesh.isVisible = false;
-                break;
-            case 'D8 Dice':
-                this.dice.mesh.D8 = mesh;
-                mesh.isVisible = false;
-                break;
-            case 'D10 Dice':
-                this.dice.mesh.D10 = mesh;
-                mesh.isVisible = false;
-                break;
-            case 'D12 Dice':
-                this.dice.mesh.D12 = mesh;
-                mesh.isVisible = false;
-                break;
-            case 'D20 Dice':
-                this.dice.mesh.D20 = mesh;
-                mesh.isVisible = false;
-                break;
-            case 'D4 Dice Collider':
-                this.dice.collider.D4 = mesh;
-                mesh.isVisible = false;
-                break;
-            case 'D6 Dice Collider':
-                this.dice.collider.D6 = mesh;
-                mesh.isVisible = false;
-                break;
-            case 'D8 Dice Collider':
-                this.dice.collider.D8 = mesh;
-                mesh.isVisible = false;
-                break;
-            case 'D10 Dice Collider':
-                this.dice.collider.D10 = mesh;
-                mesh.isVisible = false;
-                break;
-            case 'D12 Dice Collider':
-                this.dice.collider.D12 = mesh;
-                mesh.isVisible = false;
-                break;
-            case 'D20 Dice Collider':
-                this.dice.collider.D20 = mesh;
-                mesh.isVisible = false;
-                break;
-            case 'Ground':
-            case 'Wall 1':
-            case 'Wall 2':
-            case 'Wall 3':
-            case 'Wall 4':
-                mesh.physicsImpostor = new BABYLON.PhysicsImpostor(mesh, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, friction: 1 }, this.scene);
-                break;
-        }
-    });
-}
+    processMeshes = () => {
+        this.scene.meshes.forEach((mesh) => {
+            switch (mesh.name) {
+                case 'D4 Dice':
+                    this.dice.mesh.D4 = mesh;
+                    mesh.isVisible = false;
+                    break;
+                case 'D6 Dice':
+                    this.dice.mesh.D6 = mesh;
+                    mesh.isVisible = false;
+                    break;
+                case 'D8 Dice':
+                    this.dice.mesh.D8 = mesh;
+                    mesh.isVisible = false;
+                    break;
+                case 'D10 Dice':
+                    this.dice.mesh.D10 = mesh;
+                    mesh.isVisible = false;
+                    break;
+                case 'D12 Dice':
+                    this.dice.mesh.D12 = mesh;
+                    mesh.isVisible = false;
+                    break;
+                case 'D20 Dice':
+                    this.dice.mesh.D20 = mesh;
+                    mesh.isVisible = false;
+                    break;
+                case 'D4 Dice Collider':
+                    this.dice.collider.D4 = mesh;
+                    mesh.isVisible = false;
+                    break;
+                case 'D6 Dice Collider':
+                    this.dice.collider.D6 = mesh;
+                    mesh.isVisible = false;
+                    break;
+                case 'D8 Dice Collider':
+                    this.dice.collider.D8 = mesh;
+                    mesh.isVisible = false;
+                    break;
+                case 'D10 Dice Collider':
+                    this.dice.collider.D10 = mesh;
+                    mesh.isVisible = false;
+                    break;
+                case 'D12 Dice Collider':
+                    this.dice.collider.D12 = mesh;
+                    mesh.isVisible = false;
+                    break;
+                case 'D20 Dice Collider':
+                    this.dice.collider.D20 = mesh;
+                    mesh.isVisible = false;
+                    break;
+                case 'Ground':
+                case 'Wall 1':
+                case 'Wall 2':
+                case 'Wall 3':
+                case 'Wall 4':
+                    mesh.physicsImpostor = new BABYLON.PhysicsImpostor(mesh, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, friction: 1 }, this.scene);
+                    break;
+            }
+        });
+    }
 
     //#endregion
 
@@ -283,33 +290,58 @@ export default class Page extends Component {
      * @param {Boolean} includeDescendants 
      */
     addShadowCaster(mesh, includeDescendants) {
-        if(this.shadowGenerator !== null)
+        if (this.shadowGenerator !== null)
             this.shadowGenerator.addShadowCaster(mesh, includeDescendants);
     }
+
+    
+    /**
+     * @description
+     * creates initial GUI Texture
+     */
+    createGUI = () => {
+        this.advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+        this.advancedTexture.idealWidth = 600;
+    }
+
+    /**
+     * @description
+     * function used to get current diceInstanceArray 
+     */
+    getDiceInstanceArray = () => {
+        return this.diceInstanceArray;
+    }
+
 
 
     /**
      * @description
      * handles when the roll dice buttons are pressed
      * @param {Array<number>} diceSidesArray
+     * @param {string | undefined} customResultCalculation custom way of calculating result 
      */
-    handleButtonOnClick = (diceSidesArray) => {
+    handleDiceRollButtonOnClick = (diceSidesArray, customResultCalculation) => {
         this.diceRollTotalCounter.stopChecking();
 
-        
+        if (customResultCalculation !== undefined) {
+            this.customResultCalculation = customResultCalculation;
+        }
+        else this.customResultCalculation = null;
+
+
         // remove old dice
         this.diceInstanceArray.forEach(diceInstance => {
             diceInstance.dispose();
         });
         this.diceInstanceArray = [];
-        
+
         // create new dice
         for (let i = 0; i < diceSidesArray.length; i++) {
             const diceSides = diceSidesArray[i];
             this.createDiceInstance(diceSides);
         }
-        
-        this.setState({resultPanelVisible: false});
+
+        this.setState({ resultPanelVisible: false });
 
         this.diceRollTotalCounter.startChecking();
     }
@@ -412,21 +444,41 @@ export default class Page extends Component {
         this.GUIList.push(line);
     }
 
+
     /**
      * @description
-     * creates initial GUI Texture
+     * handles when a edit custom roll or new custom roll button is pressed
+     * @param {number} customRollIndex the index of the custom roll to use
      */
-    createGUI = () => {
-        this.advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
-        this.advancedTexture.idealWidth = 600;
+    handleEditCustomDiceRollClick = (customRollIndex) => {
+        this.setState({
+            displayCustomRollPanel: true,
+            currentlyEditingCustomRollIndex: customRollIndex
+        });
     }
 
     /**
      * @description
-     * function used to get current diceInstanceArray 
+     * handles saving new custom roll data
+     * @param {{name: string, diceRollArray: number, customResultCalculation: string} | null} saveData
      */
-    getDiceInstanceArray = () => {
-        return this.diceInstanceArray;
+    handleSaveCustomRollClick = (saveData) => {
+        const { currentlyEditingCustomRollIndex, customRollsData } = this.state;
+        const stateChange = {           
+            displayCustomRollPanel: false,
+            currentlyEditingCustomRollIndex: -1,
+        };
+
+        //TODO: fix this as it is technically mutating the state
+        if(saveData != null) {
+            // -1 is used to represent new custom roll
+            if(currentlyEditingCustomRollIndex === -1)
+                customRollsData.push(saveData);
+            else
+                customRollsData[currentlyEditingCustomRollIndex] = saveData;
+            stateChange.customRollsData = customRollsData;
+        }
+        this.setState(stateChange);
     }
 
     /**
@@ -435,35 +487,46 @@ export default class Page extends Component {
      * @param {Array<number>} diceRollArray
      */
     displayRollResult = (diceRollArray) => {
-        this.setState({diceRollArray, resultPanelVisible: true});
+
+        let resultText = '';
+        if (this.customResultCalculation !== null) {
+            resultText = calculateCustomDiceRollResult(diceRollArray, this.customResultCalculation).message;
+        }
+        else {
+            resultText = '[';
+            let totalRoll = 0;
+            for (let i = 0; i < diceRollArray.length; i++) {
+                const roll = diceRollArray[i];
+
+                totalRoll += roll;
+
+                resultText += `${roll}`;
+                if (i < diceRollArray.length - 1) resultText += ', ';
+            }
+
+            resultText += `] Total: ${totalRoll}`;
+        }
+        this.setState({ diceRollArray, resultPanelVisible: true, resultText });
     }
-    
+
     /**
      * @description
      * hides result panel, is passed to child components
      */
     hideResultPanel = () => {
-        this.setState({resultPanelVisible: false});
+        this.setState({ resultPanelVisible: false });
     }
 
 
     render() {
-        
-        const { diceRollArray, resultPanelVisible } = this.state;
 
-
-        let resultText = '[';
-        let totalRoll = 0;
-        for(let i = 0; i < diceRollArray.length; i++) {
-            const roll = diceRollArray[i];
-
-            totalRoll += roll;
-
-            resultText += `${roll}`;
-            if(i < diceRollArray.length - 1) resultText += ', ';
-        }
-
-        resultText += `] Total: ${totalRoll}`;
+        const {
+            displayCustomRollPanel,
+            resultPanelVisible,
+            resultText,
+            currentlyEditingCustomRollIndex,
+            customRollsData
+        } = this.state;
 
         return (
             <div className='scene-container'>
@@ -471,13 +534,25 @@ export default class Page extends Component {
                     onSceneMount={this.handleSceneMount}
                 />
                 <DiceButtons
-                    onClick={this.handleButtonOnClick}
+                    onClick={this.handleDiceRollButtonOnClick}
                 />
                 <CustomDiceRolls
+                    onDiceRollClick={this.handleDiceRollButtonOnClick}
+                    onEditCustomDiceRollClick={this.handleEditCustomDiceRollClick}
+                    customRollsData={customRollsData}
                 />
+
+
+                {displayCustomRollPanel && (
+                    <CreateCustomRoll
+                        onSave={this.handleSaveCustomRollClick}
+                        createNew={currentlyEditingCustomRollIndex === -1}
+                    />
+                )}
+
                 <ResultPanel
                     resultText={resultText}
-                    resultPanelVisible={resultPanelVisible}
+                    resultPanelVisible={resultPanelVisible && !displayCustomRollPanel}
                     hideResultPanel={this.hideResultPanel}
                 />
             </div>

@@ -106,19 +106,19 @@ export default class DiceButtons extends Component {
         const { customNumber, buttonsHidden } = this.state;
         return (
             <div className='dice-buttons'>
-                <Button className='hide-show-button dice-button' onClick={this.handleChangeVisibilityClick}>
+                <Button className='hide-show-button' onClick={this.handleChangeVisibilityClick}>
                     {buttonsHidden ? <FontAwesomeIcon icon='chevron-right' /> : <FontAwesomeIcon icon='chevron-left' />}
                 </Button>
                 <div className='buttons-container'>
                     <div ref={this.hidableButtonRef} className='hidable-buttons-container' style={this.getOffset()}>
-                        <Button className='dice-button' onClick={() => { this.handleCustomNumberChangeClick(true); }}><FontAwesomeIcon icon='plus' /></Button>
-                        <Button className='dice-button' onClick={() => { this.handleCustomNumberChangeClick(false); }}><FontAwesomeIcon icon='minus' /></Button>
-                        <Button className='dice-button' onClick={() => { this.handleRollDiceClick(4, customNumber) }}>{customNumber} D4</Button>
-                        <Button className='dice-button' onClick={() => { this.handleRollDiceClick(6, customNumber) }}>{customNumber} D6</Button>
-                        <Button className='dice-button' onClick={() => { this.handleRollDiceClick(8, customNumber) }}>{customNumber} D8</Button>
-                        <Button className='dice-button' onClick={() => { this.handleRollDiceClick(10, customNumber) }}>{customNumber} D10</Button>
-                        <Button className='dice-button' onClick={() => { this.handleRollDiceClick(12, customNumber) }}>{customNumber} D12</Button>
-                        <Button className='dice-button' onClick={() => { this.handleRollDiceClick(20, customNumber) }}>{customNumber} D20</Button>
+                        <Button onClick={() => { this.handleCustomNumberChangeClick(true); }}><FontAwesomeIcon icon='plus' /></Button>
+                        <Button onClick={() => { this.handleCustomNumberChangeClick(false); }}><FontAwesomeIcon icon='minus' /></Button>
+                        <Button onClick={() => { this.handleRollDiceClick(4, customNumber) }}>{customNumber} D4</Button>
+                        <Button onClick={() => { this.handleRollDiceClick(6, customNumber) }}>{customNumber} D6</Button>
+                        <Button onClick={() => { this.handleRollDiceClick(8, customNumber) }}>{customNumber} D8</Button>
+                        <Button onClick={() => { this.handleRollDiceClick(10, customNumber) }}>{customNumber} D10</Button>
+                        <Button onClick={() => { this.handleRollDiceClick(12, customNumber) }}>{customNumber} D12</Button>
+                        <Button onClick={() => { this.handleRollDiceClick(20, customNumber) }}>{customNumber} D20</Button>
                     </div>
                 </div>
             </div>
