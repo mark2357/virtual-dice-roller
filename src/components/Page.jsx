@@ -47,10 +47,9 @@ export default class Page extends Component {
         };
         this.diceInstanceArray = [];
         this.scene = null;
-        this.currentDiceRollNumber = -1;
         this.advancedTexture = null;
         this.shadowGenerator = null;
-        this.diceRollTotalCounter = new DiceRollTotalCounter(this.getDiceInstanceArray, this.getCurrentDiceRollNumber, this.displayRollResult);
+        this.diceRollTotalCounter = new DiceRollTotalCounter(this.getDiceInstanceArray, this.displayRollResult);
     }
 
     //#region initial load functions
@@ -291,10 +290,9 @@ export default class Page extends Component {
     /**
      * @description
      * handles when the roll dice buttons are pressed
-     * @param {number} diceSides
-     * @param {number} numberOfDice
+     * @param {Array<number>} diceSidesArray
      */
-    handleButtonOnClick = (diceSides, numberOfDice) => {
+    handleButtonOnClick = (diceSidesArray) => {
         this.diceRollTotalCounter.stopChecking();
 
         
@@ -305,8 +303,8 @@ export default class Page extends Component {
         this.diceInstanceArray = [];
         
         // create new dice
-        this.currentDiceRollNumber = diceSides;
-        for (let i = 0; i < numberOfDice; i++) {
+        for (let i = 0; i < diceSidesArray.length; i++) {
+            const diceSides = diceSidesArray[i];
             this.createDiceInstance(diceSides);
         }
         
@@ -418,7 +416,6 @@ export default class Page extends Component {
      * creates initial GUI Texture
      */
     createGUI = () => {
-
         this.advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
         this.advancedTexture.idealWidth = 600;
     }
@@ -431,14 +428,6 @@ export default class Page extends Component {
         return this.diceInstanceArray;
     }
 
-    /**
-     * @description
-     * function used to get currentDiceRollNumber 
-     */
-    getCurrentDiceRollNumber = () => {
-        return this.currentDiceRollNumber;
-    }
-    
     /**
      * @description
      * displays the result of a dice roll

@@ -46,7 +46,8 @@ export default class DiceButtons extends Component {
      */
     handleRollDiceClick = (diceSides, numberOfDice) => {
         if (this.props !== null && typeof this.props.onClick === 'function') {
-            this.props.onClick(diceSides, numberOfDice);
+            const diceRollArray = Array(numberOfDice).fill(diceSides);
+            this.props.onClick(diceRollArray);
         }
     }
 

@@ -1,4 +1,5 @@
 import * as BABYLON from '@babylonjs/core';
+import getSidesFromMesh from './helpers/getDiceSidesFromMesh';
 
 export default class DiceRollTotalCounter {
 
@@ -7,9 +8,8 @@ export default class DiceRollTotalCounter {
      * @param {function} getCurrentDiceRollNumber
      * @param {function} onCountFinished 
      */
-    constructor(getDiceArray, getCurrentDiceRollNumber, onCountFinished,) {
+    constructor(getDiceArray, onCountFinished, ) {
         this.getDiceArray = getDiceArray;
-        this.getCurrentDiceRollNumber = getCurrentDiceRollNumber;
         this.onCountFinished = onCountFinished;
 
         // this.diceNotMovingCounter = 0;
@@ -52,14 +52,14 @@ export default class DiceRollTotalCounter {
             let allDiceFinishedRolling = true;
 
             diceArray.forEach((mesh) => {
-                if(mesh.physicsImpostor.physicsBody.getAngularVelocity().length() > 0.1 || mesh.physicsImpostor.physicsBody.getAngularVelocity().length() > 0.1) {
+                if (mesh.physicsImpostor.physicsBody.getAngularVelocity().length() > 0.1 || mesh.physicsImpostor.physicsBody.getAngularVelocity().length() > 0.1) {
                     allDiceFinishedRolling = false;
                 }
                 // console.log(mesh.physicsImpostor.physicsBody);
                 // console.log(mesh.physicsImpostor.physicsBody.getAngularVelocity().length(), mesh.physicsImpostor.physicsBody.getLinearVelocity().length());
             });
 
-            if(allDiceFinishedRolling === true) {
+            if (allDiceFinishedRolling === true) {
                 this._clearDiceCheckInterval();
                 const diceTotalArray = this._determineDiceRoll();
                 this.onCountFinished(diceTotalArray);
@@ -77,8 +77,6 @@ export default class DiceRollTotalCounter {
             this.diceCheckInterval = null;
         }
     }
-
-
 
     /**
      * @description
@@ -182,24 +180,28 @@ export default class DiceRollTotalCounter {
             let rotationMatrix = new BABYLON.Matrix();
             mesh.rotationQuaternion.toRotationMatrix(rotationMatrix);
 
-            //get dice vectors for current dice
-            let diceSideVectors = this._getDiceVectors(this.getCurrentDiceRollNumber());
+            const diceSides = getSidesFromMesh(mesh);
+            if (diceSides != null) {
 
-            let diceRoll = -1
-            let currentHighestValue = -1;
-            // checks which roll is closest to the current roll
-            for (let i = 0; i < diceSideVectors.length; i++) {
-                let transformedVector = BABYLON.Vector3.TransformCoordinates(diceSideVectors[i], rotationMatrix);
-                let dotProduct = BABYLON.Vector3.Dot(transformedVector, BABYLON.Vector3.Up());
-                if (currentHighestValue < dotProduct) {
-                    diceRoll = i + 1;
-                    currentHighestValue = dotProduct;
+                //get dice vectors for current dice
+                let diceSideVectors = this._getDiceVectors(diceSides);
+
+                let diceRoll = -1
+                let currentHighestValue = -1;
+                // checks which roll is closest to the current roll
+                for (let i = 0; i < diceSideVectors.length; i++) {
+                    let transformedVector = BABYLON.Vector3.TransformCoordinates(diceSideVectors[i], rotationMatrix);
+                    let dotProduct = BABYLON.Vector3.Dot(transformedVector, BABYLON.Vector3.Up());
+                    if (currentHighestValue < dotProduct) {
+                        diceRoll = i + 1;
+                        currentHighestValue = dotProduct;
+                    }
                 }
+                // console.log(diceRoll);
+                resultArray.push(diceRoll);
             }
-            // console.log(diceRoll);
-            resultArray.push(diceRoll);
+            else console.error('could not get dice sides from mesh with name: ${mesh}');
         });
         return resultArray;
     }
-
 }
