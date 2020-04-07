@@ -219,7 +219,7 @@ export default class CreateCustomRoll extends Component {
                         </Button>
                         <Button className='button-long' onClick={() => { onCancel(); }}>
                             <div className='icon-wrapper'>
-                                <span>Close</span>
+                                <span>Cancel</span>
                                 <FontAwesomeIcon icon='times' />
                             </div>
                         </Button>
