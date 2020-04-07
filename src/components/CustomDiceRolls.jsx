@@ -16,7 +16,7 @@ export default class CustomDiceRolls extends Component {
             editMode: false,
             buttonsWidth: 0, // the buttons width in px
         }
-        this.hidableButtonRef = React.createRef();
+        this.hideableButtonRef = React.createRef();
     }
 
     /**
@@ -24,8 +24,8 @@ export default class CustomDiceRolls extends Component {
      * handles when the browser window resizes
      */
     onResizeWindow = () => {
-        if (this.hidableButtonRef.current !== null) {
-            this.setState({ buttonsWidth: this.hidableButtonRef.current.scrollWidth });
+        if (this.hideableButtonRef.current !== null) {
+            this.setState({ buttonsWidth: this.hideableButtonRef.current.scrollWidth });
         }
     }
 
@@ -60,7 +60,7 @@ export default class CustomDiceRolls extends Component {
 
     /**
      * @description
-     * returns the style for the hidable buttons container
+     * returns the style for the hideable buttons container
      * @returns { {left: number} }
      */
     getOffset() {
@@ -115,7 +115,7 @@ export default class CustomDiceRolls extends Component {
                     onClick={this.handleChangeVisibilityClick}
                     icon={buttonsHidden ? 'chevron-left' : 'chevron-right'}
                 />
-                <div ref={this.hidableButtonRef} className='hidable-buttons-container' style={this.getOffset()}>
+                <div ref={this.hideableButtonRef} className='hideable-buttons-container' style={this.getOffset()}>
                     <div className='edit-buttons-row'>
                         <Button onClick={() => { onEditCustomDiceRollClick(-1); }} icon='plus' />
                         <Button className={editMode ? 'toggled-enabled' : 'toggled-disabled'} onClick={this.handleToggleEditMode} icon='edit' />

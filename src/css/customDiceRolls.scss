@@ -1,9 +1,11 @@
 .custom-dice-rolls {
     position: absolute;
-    top: 1em;
-    left: 1em;
-    bottom: 1em;
-    right: 1em;
+    top: 0em;
+    left: 0em;
+    bottom: 0em;
+    right: 0em;
+    padding: 1em;
+    overflow: hidden;
     pointer-events: none;
     display: flex;
     flex-direction: column;
@@ -13,7 +15,7 @@
         position: relative;
     }
     
-    .hidable-buttons-container {
+    .hideable-buttons-container {
         position: absolute;
         display: flex;
         align-items: flex-start;
@@ -25,6 +27,7 @@
         right: 0em;
         writing-mode: vertical-lr;
         flex-wrap: wrap-reverse;
+        padding: 1em;
 
         >button{
             writing-mode: initial;

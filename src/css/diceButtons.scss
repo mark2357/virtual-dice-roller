@@ -16,7 +16,7 @@
         position: relative;
         flex-grow: 1;
         
-        .hidable-buttons-container {
+        .hideable-buttons-container {
             position: absolute;
             display: flex;
             align-items: flex-start;
@@ -34,17 +34,17 @@
 
 
 
-/* .hidable-buttons-container.hidden {
+/* .hideable-buttons-container.hidden {
     left: -6em;
 } */
 /* @media only screen and (max-height: 54em) {
-    .hidable-buttons-container.hidden {
+    .hideable-buttons-container.hidden {
         right: 11em;
     }
     
 }
 @media only screen and (max-height: 35em) {
-    .hidable-buttons-container.hidden {
+    .hideable-buttons-container.hidden {
         right: 16em;
     }
     .dice-button {

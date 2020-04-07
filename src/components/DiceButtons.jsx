@@ -15,7 +15,7 @@ export default class DiceButtons extends Component {
             buttonsHidden: false,
             buttonsWidth: 0, // the buttons width in px
         }
-        this.hidableButtonRef = React.createRef();
+        this.hideableButtonRef = React.createRef();
     }
 
     /**
@@ -23,8 +23,8 @@ export default class DiceButtons extends Component {
      * handles when the browser window resizes
      */
     onResizeWindow = () => {
-        if (this.hidableButtonRef.current !== null) {
-            this.setState({ buttonsWidth: this.hidableButtonRef.current.scrollWidth });
+        if (this.hideableButtonRef.current !== null) {
+            this.setState({ buttonsWidth: this.hideableButtonRef.current.scrollWidth });
         }
     }
 
@@ -84,7 +84,7 @@ export default class DiceButtons extends Component {
 
     /**
      * @description
-     * returns the style for the hidable buttons container
+     * returns the style for the hideable buttons container
      * @returns { {left: number} }
      */
     getOffset() {
@@ -111,7 +111,7 @@ export default class DiceButtons extends Component {
                     icon={buttonsHidden ? 'chevron-right' : 'chevron-left'} /
                 >
                 <div className='buttons-container'>
-                    <div ref={this.hidableButtonRef} className='hidable-buttons-container' style={this.getOffset()}>
+                    <div ref={this.hideableButtonRef} className='hideable-buttons-container' style={this.getOffset()}>
                         <Button onClick={() => { this.handleCustomNumberChangeClick(true); }} icon='plus' />
                         <Button onClick={() => { this.handleCustomNumberChangeClick(false); }} icon='minus' />
                         <Button onClick={() => { this.handleRollDiceClick(4, customNumber) }}>{customNumber} D4</Button>
