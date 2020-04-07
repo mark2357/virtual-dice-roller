@@ -57,7 +57,7 @@ module.exports = {
             { from: 'assets/textures/Dice Texture.png', to: 'assets/textures/Dice Texture.png' },
             { from: 'assets/textures/Table Baked.jpg', to: 'assets/textures/Table Baked.jpg' },
             { from: 'assets/Scene.babylon', to: 'assets/Scene.babylon' },
-            { from: 'assets/favicon.ico', to: 'assets/favicon.ico' },
+            // { from: 'assets/favicon.ico', to: 'assets/favicon.ico' },
             { from: 'assets/Scene.babylon.manifest', to: 'assets/Scene.babylon.manifest' },
         ]),
         new WebpackPwaManifest({
