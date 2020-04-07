@@ -1,7 +1,6 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import '../css/diceButtons.scss';
 import { Button } from './generics/Button';
@@ -106,13 +105,15 @@ export default class DiceButtons extends Component {
         const { customNumber, buttonsHidden } = this.state;
         return (
             <div className='dice-buttons'>
-                <Button className='hide-show-button' onClick={this.handleChangeVisibilityClick}>
-                    {buttonsHidden ? <FontAwesomeIcon icon='chevron-right' /> : <FontAwesomeIcon icon='chevron-left' />}
-                </Button>
+                <Button
+                    className='hide-show-button'
+                    onClick={this.handleChangeVisibilityClick}
+                    icon={buttonsHidden ? 'chevron-right' : 'chevron-left'} /
+                >
                 <div className='buttons-container'>
                     <div ref={this.hidableButtonRef} className='hidable-buttons-container' style={this.getOffset()}>
-                        <Button onClick={() => { this.handleCustomNumberChangeClick(true); }}><FontAwesomeIcon icon='plus' /></Button>
-                        <Button onClick={() => { this.handleCustomNumberChangeClick(false); }}><FontAwesomeIcon icon='minus' /></Button>
+                        <Button onClick={() => { this.handleCustomNumberChangeClick(true); }} icon='plus' />
+                        <Button onClick={() => { this.handleCustomNumberChangeClick(false); }} icon='minus' />
                         <Button onClick={() => { this.handleRollDiceClick(4, customNumber) }}>{customNumber} D4</Button>
                         <Button onClick={() => { this.handleRollDiceClick(6, customNumber) }}>{customNumber} D6</Button>
                         <Button onClick={() => { this.handleRollDiceClick(8, customNumber) }}>{customNumber} D8</Button>

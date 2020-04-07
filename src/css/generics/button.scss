@@ -4,11 +4,13 @@
     background: white;
     border: 0.2em solid #09C;
     color:#09C;
-    width: 4em;
-    height: 3.8em;
+    width: 3.6em;
+    height: 3.6em;
     margin: 0.2em;
     transition: color 0.3s, background 0.3s;
     cursor: pointer;
+    font-size: inherit;
+
     &:hover {
         background: #09C;
         color: white;
@@ -17,9 +19,38 @@
         }
     }
     &.button-long {
-        width: 12em;
+        width: 7.6em;
     }
     &.half-height {
-        height: 2em;
+        height: 1.6em;
+    }
+    &.toggled-enabled {
+        border-color: green;
+        span, svg {
+            color: green;
+        }
+        &:hover {
+            background: green;
+            color: white;
+            span, svg {
+                color: white;
+            }
+        }
+    }
+    &.toggled-disabled {
+        border-color: red;
+        span, svg {
+            color: red;
+        }
+        &:hover {
+            background: red;
+            color: white;
+            span, svg {
+                color: white;
+            }
+        }
+    }
+    .icon {
+        font-size: 1em;
     }
 }

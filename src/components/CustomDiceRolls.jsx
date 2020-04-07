@@ -1,7 +1,6 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import '../css/customDiceRolls.scss';
 import { Button } from './generics/Button';
@@ -14,6 +13,7 @@ export default class CustomDiceRolls extends Component {
 
         this.state = {
             buttonsHidden: false,
+            editMode: false,
             buttonsWidth: 0, // the buttons width in px
         }
         this.hidableButtonRef = React.createRef();
@@ -74,37 +74,55 @@ export default class CustomDiceRolls extends Component {
     }
 
     /**
+     * @description
+     * toggles edit mode
+     */
+    handleToggleEditMode = () => {
+        const { editMode } = this.state;
+        this.setState({ editMode: !editMode });
+    }
+
+    /**
      * @inheritdoc
      */
     render() {
-        const { buttonsHidden } = this.state;
+        const { buttonsHidden, editMode } = this.state;
         const { onEditCustomDiceRollClick, customRollsData } = this.props;
 
         const customRollsButtons = [];
-        customRollsData.forEach(customRollData => {
+        customRollsData.forEach((customRollData, index) => {
             customRollsButtons.push(
-                <Button
-                    className='button-long'
-                    onClick={() => { this.handleRollDiceClick(customRollData.diceRollArray, customRollData.customResultCalculation); }}
-                >
-                    <span>{customRollData.name}</span>
-                </Button>
+                <div className='custom-roll-row' key={index}>
+                    <Button
+                        className={`${editMode ? '' : 'hidden'}`}
+                        onClick={() => { onEditCustomDiceRollClick(index); }}
+                        icon='edit'
+                    />
+                    <Button
+                        className='button-long'
+                        onClick={() => { this.handleRollDiceClick(customRollData.diceRollArray, customRollData.customResultCalculation); }}
+                    >
+                        <span>{customRollData.name}</span>
+                    </Button>
+                </div>
             );
         });
 
         return (
             <div className='custom-dice-rolls'>
-                <Button className='hide-show-button' onClick={this.handleChangeVisibilityClick}>
-                    {buttonsHidden ? <FontAwesomeIcon icon='chevron-left' /> : <FontAwesomeIcon icon='chevron-right' />}
-                </Button>
-                <div className='buttons-container'>
-                    <div ref={this.hidableButtonRef} className='hidable-buttons-container' style={this.getOffset()}>
-                        <Button className='button-long' onClick={() => { this.handleRollDiceClick([20, 20], 'MAX(@D, @D)'); }}><span>Roll Advantage</span></Button>
-                        <Button className='button-long' onClick={() => { this.handleRollDiceClick([20, 20], 'MIN(@D, @D)'); }}><span>Roll Disadvantage</span></Button>
-                        {customRollsButtons}
-                        <Button className='dice-button' onClick={() => { onEditCustomDiceRollClick(-1); }}><FontAwesomeIcon icon='plus' /></Button>
-                        {/* <Button className='dice-button' onClick={() => { this.onEditCustomDiceRollClick(0); }}><FontAwesomeIcon icon='edit' /></Button> */}
+                <Button
+                    className='hide-show-button'
+                    onClick={this.handleChangeVisibilityClick}
+                    icon={buttonsHidden ? 'chevron-left' : 'chevron-right'}
+                />
+                <div ref={this.hidableButtonRef} className='hidable-buttons-container' style={this.getOffset()}>
+                    <div className='edit-buttons-row'>
+                        <Button onClick={() => { onEditCustomDiceRollClick(-1); }} icon='plus' />
+                        <Button className={editMode ? 'toggled-enabled' : 'toggled-disabled'} onClick={this.handleToggleEditMode} icon='edit' />
                     </div>
+                    <Button className='button-long' onClick={() => { this.handleRollDiceClick([20, 20], 'MAX(@D, @D)'); }}><span>Roll Advantage</span></Button>
+                    <Button className='button-long' onClick={() => { this.handleRollDiceClick([20, 20], 'MIN(@D, @D)'); }}><span>Roll Disadvantage</span></Button>
+                    {customRollsButtons}
                 </div>
             </div>
         );

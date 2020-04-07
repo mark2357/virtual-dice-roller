@@ -31,7 +31,7 @@ export default class Page extends Component {
             resultText: '',
             displayCustomRollPanel: false,
             currentlyEditingCustomRollIndex: -1, // -1 for new
-            customRollsData: [],
+            customRollsData: this.loadCustomRolls(),
         }
 
         this.dice = {
@@ -294,7 +294,7 @@ export default class Page extends Component {
             this.shadowGenerator.addShadowCaster(mesh, includeDescendants);
     }
 
-    
+
     /**
      * @description
      * creates initial GUI Texture
@@ -312,6 +312,28 @@ export default class Page extends Component {
         return this.diceInstanceArray;
     }
 
+    /**
+     * @description
+     * saves the custom RollData from the the state to local storage
+     */
+    saveCustomRolls = () => {
+        const { customRollsData } = this.state;
+        localStorage.setItem('customRolls', JSON.stringify(customRollsData));
+    }
+    
+    /**
+     * @description
+     * returns the custom roll data from the state
+     * @returns {{name: string, diceRollArray: Array<number>, customResultCalculation: string}}
+     */
+    loadCustomRolls = () => {
+        const jsonData = localStorage.getItem('customRolls');
+        if(jsonData !== null) {
+            const data = JSON.parse(jsonData);
+            return data;
+        }
+        return [];
+    }
 
 
     /**
@@ -464,21 +486,50 @@ export default class Page extends Component {
      */
     handleSaveCustomRollClick = (saveData) => {
         const { currentlyEditingCustomRollIndex, customRollsData } = this.state;
-        const stateChange = {           
+        const stateChange = {
             displayCustomRollPanel: false,
             currentlyEditingCustomRollIndex: -1,
         };
 
         //TODO: fix this as it is technically mutating the state
-        if(saveData != null) {
-            // -1 is used to represent new custom roll
-            if(currentlyEditingCustomRollIndex === -1)
-                customRollsData.push(saveData);
-            else
-                customRollsData[currentlyEditingCustomRollIndex] = saveData;
-            stateChange.customRollsData = customRollsData;
-        }
-        this.setState(stateChange);
+        // -1 is used to represent new custom roll
+        if (currentlyEditingCustomRollIndex === -1)
+            customRollsData.push(saveData);
+        else
+            customRollsData[currentlyEditingCustomRollIndex] = saveData;
+        stateChange.customRollsData = customRollsData;
+
+        this.setState(stateChange, () => {
+            this.saveCustomRolls();
+        });
+    }
+
+    /**
+     * @description
+     * handles when a custom roll is deleted
+     */
+    handleDeleteCustomRollClick = () => {
+        const { currentlyEditingCustomRollIndex, customRollsData } = this.state;
+
+        const newCustomRollsData = customRollsData.filter((customRollData, index) => index !== currentlyEditingCustomRollIndex);
+        this.setState({
+            displayCustomRollPanel: false,
+            currentlyEditingCustomRollIndex: -1,
+            customRollsData: newCustomRollsData,
+        },  () => {
+            this.saveCustomRolls();
+        });
+    }
+
+    /**
+     * @description
+     * handles when a custom roll is edited
+     */
+    handleCancelCustomRollClick = () => {
+        this.setState({
+            displayCustomRollPanel: false,
+            currentlyEditingCustomRollIndex: -1,
+        });
     }
 
     /**
@@ -546,7 +597,10 @@ export default class Page extends Component {
                 {displayCustomRollPanel && (
                     <CreateCustomRoll
                         onSave={this.handleSaveCustomRollClick}
+                        onDelete={this.handleDeleteCustomRollClick}
+                        onCancel={this.handleCancelCustomRollClick}
                         createNew={currentlyEditingCustomRollIndex === -1}
+                        customRollData={currentlyEditingCustomRollIndex === -1 ? null : customRollsData[currentlyEditingCustomRollIndex]}
                     />
                 )}
 

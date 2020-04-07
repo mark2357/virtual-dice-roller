@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import '../../css/generics/ValueCounter.scss';
 
 export const ValueCounter = (props) => {
-    const {className, children, onClick} = props;
+    const { className, children, onClick } = props;
 
     /**
      * @description
@@ -16,22 +16,26 @@ export const ValueCounter = (props) => {
      * 
      */
     const handleValueChange = (deltaValue) => {
-        if(typeof onClick === 'function') {
+        if (typeof onClick === 'function') {
             onClick(deltaValue);
         }
     };
 
     return (
         <div className={`value-counter ${className}`}>
-            <Button className='half-height' onClick={() => {handleValueChange(1)}}>
-                <FontAwesomeIcon icon='chevron-up' />
-            </Button>
+            <Button
+                className='half-height'
+                onClick={() => { handleValueChange(1) }}
+                icon='chevron-up'
+            />
             <div className='value-container'>
                 {children}
             </div>
-            <Button className='half-height' onClick={() => {handleValueChange(-1)}}>
-            <FontAwesomeIcon icon='chevron-down' />
-            </Button>
+            <Button
+                className='half-height'
+                onClick={() => { handleValueChange(-1) }}
+                icon='chevron-down'
+            />
         </div>
     );
 }

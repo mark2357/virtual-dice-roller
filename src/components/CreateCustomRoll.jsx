@@ -21,40 +21,36 @@ export default class CreateCustomRoll extends Component {
             createNew,
         } = props;
 
-        const {
-            name,
-            diceRollArray,
-            customResultCalculation,
-        } = customRollData;
-
 
         let bonusCount = 0;
         if (createNew === false) {
+            const {
+                customResultCalculation,
+            } = customRollData;
+
             // determines the bonus by simulating a roll where all dice rolls are 0
-            const numberOfDice = customResultCalculation.match(/@D/g).length;
-            const diceRollArray = Array(numberOfDice).fill(0);
-            bonusCount = calculateCustomDiceRollResult(diceRollArray, customResultCalculation).total;
+            const numberOfDice = customResultCalculation.match(/@D/g) === null ? 0 : customResultCalculation.match(/@D/g).length;
+            const bonusTestDiceRollArray = Array(numberOfDice).fill(0);
+            bonusCount = calculateCustomDiceRollResult(bonusTestDiceRollArray, customResultCalculation).value;
         }
 
 
-
-
-
         this.state = {
-            d20Count: createNew ? 1 : diceRollArray.filter(x => x == 20).length,
-            d12Count: createNew ? 0 : diceRollArray.filter(x => x == 12).length,
-            d10Count: createNew ? 0 : diceRollArray.filter(x => x == 10).length,
-            d8Count: createNew ? 0 : diceRollArray.filter(x => x == 8).length,
-            d6Count: createNew ? 0 : diceRollArray.filter(x => x == 6).length,
-            d4Count: createNew ? 0 : diceRollArray.filter(x => x == 4).length,
+            d20Count: createNew ? 1 : customRollData.diceRollArray.filter(x => x == 20).length,
+            d12Count: createNew ? 0 : customRollData.diceRollArray.filter(x => x == 12).length,
+            d10Count: createNew ? 0 : customRollData.diceRollArray.filter(x => x == 10).length,
+            d8Count: createNew ? 0 : customRollData.diceRollArray.filter(x => x == 8).length,
+            d6Count: createNew ? 0 : customRollData.diceRollArray.filter(x => x == 6).length,
+            d4Count: createNew ? 0 : customRollData.diceRollArray.filter(x => x == 4).length,
             bonusCount: bonusCount,
-            customRollName: createNew ? '' : name,
+            customRollName: createNew ? '' : customRollData.name,
         };
     }
 
-
     /**
-     * 
+     * @description
+     * returns data for the currently edited or created custom roll
+     * @returns {{name: string, diceRollArray: Array<number>, customResultCalculation: string}}
      */
     getSaveData = () => {
         const {
@@ -71,10 +67,10 @@ export default class CreateCustomRoll extends Component {
         let customResultCalculation = '';
         const totalDice = d20Count + d12Count + d10Count + d8Count + d6Count + d4Count;
 
-        for (let i = 0; i < totalDice; i++) customResultCalculation += `@D ${i < totalDice -1 ? '+ ': ''}`;
+        for (let i = 0; i < totalDice; i++) customResultCalculation += `@D ${i < totalDice - 1 ? '+ ' : ''}`;
 
         // only add bonus count if it's not 0
-        if(bonusCount !== 0) customResultCalculation += bonusCount > 0 ? `+ ${bonusCount}` : `- ${Math.abs(bonusCount)}`;
+        if (bonusCount !== 0) customResultCalculation += bonusCount > 0 ? `+ ${bonusCount}` : `- ${Math.abs(bonusCount)}`;
 
         const saveData = {
             name: customRollName,
@@ -144,7 +140,7 @@ export default class CreateCustomRoll extends Component {
      * 
      */
     handleNameChange = (e) => {
-        this.setState({customRollName: e.target.value});
+        this.setState({ customRollName: e.target.value });
     }
 
     render() {
@@ -153,7 +149,7 @@ export default class CreateCustomRoll extends Component {
             d20Count, d12Count, d10Count, d8Count, d6Count, d4Count, bonusCount, customRollName,
         } = this.state;
 
-        const { createNew, onSave } = this.props;
+        const { createNew, onSave, onDelete, onCancel } = this.props;
 
         const minRoll = d20Count + d12Count + d10Count + d8Count + d6Count + d4Count + bonusCount;
         const maxRoll = d20Count * 20 + d12Count * 12 + d10Count * 10 + d8Count * 8 + d6Count * 6 + d4Count * 4 + bonusCount;
@@ -169,7 +165,7 @@ export default class CreateCustomRoll extends Component {
                     <div className='content-container'>
                         <div className='name-wrapper'>
                             <span>Custom Roll Name: </span>
-                            <input className='name-input' type='text' minLength="0" maxLength="20" value={customRollName} onChange={this.handleNameChange}/>
+                            <input className='name-input' type='text' minLength="0" maxLength="25" value={customRollName} onChange={this.handleNameChange} />
                         </div>
                         <div className='counter-wrapper'>
                             <ValueCounter onClick={(deltaValue) => this.handleCounterOnclick(20, deltaValue)}>
@@ -202,6 +198,16 @@ export default class CreateCustomRoll extends Component {
                                 <span>{`Average: ${avgRoll}`}</span>
                             </div>
                         </div>
+                        {!createNew && (
+                            <div className='delete-button-wrapper'>
+                                <Button className='button-long' onClick={() => { onDelete(); }}>
+                                    <div className='icon-wrapper'>
+                                        <span>Delete</span>
+                                        <FontAwesomeIcon icon='trash-alt' />
+                                    </div>
+                                </Button>
+                            </div>
+                        )}
                     </div>
                     <hr />
                     <div className='footer'>
@@ -211,7 +217,7 @@ export default class CreateCustomRoll extends Component {
                                 <FontAwesomeIcon icon='save' />
                             </div>
                         </Button>
-                        <Button className='button-long' onClick={() => { onSave(null); }}>
+                        <Button className='button-long' onClick={() => { onCancel(); }}>
                             <div className='icon-wrapper'>
                                 <span>Close</span>
                                 <FontAwesomeIcon icon='times' />
@@ -226,20 +232,12 @@ export default class CreateCustomRoll extends Component {
 
 CreateCustomRoll.propTypes = {
     onSave: PropTypes.func.isRequired,
+    onDelete: PropTypes.func.isRequired,
+    onCancel: PropTypes.func.isRequired,
     createNew: PropTypes.bool.isRequired,
     customRollData: CustomRollsDataProps,
-    // customRollData: PropTypes.shape({
-    //     name: PropTypes.string.isRequired,
-    //     diceRollArray: PropTypes.arrayOf(PropTypes.number.isRequired).isRequired,
-    //     customResultCalculation: PropTypes.string.isRequired,
-    // }),
 };
 
 CreateCustomRoll.defaultProps = {
     customRollData: CustomRollsDataDefaultProps,
-    // customRollData: {
-    //     name: '',
-    //     diceRollArray: [],
-    //     customResultCalculation: '',
-    // }
 }

@@ -38,6 +38,7 @@
             justify-content: center;
             align-items: center;
             color: #09c;
+            text-align: center;
         }
         .content-container {
             flex-grow: 1;
@@ -72,7 +73,13 @@
                 justify-content: center;
                 align-items: center;
                 flex-direction: column;
-			}
+            }
+            .delete-button-wrapper {
+                flex-grow: 1;
+				display: flex;
+                justify-content: center;
+                align-items: center;
+            }
         }
         .footer {
             display: flex;
