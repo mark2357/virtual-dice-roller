@@ -46,7 +46,9 @@ module.exports = {
     plugins: [
         new CopyPlugin([
             { from: 'index.html', to: 'index.html' },
-            { from: 'assets/textures', to: 'assets/textures' },
+            { from: 'assets/textures/skybox_sml', to: 'assets/textures/skybox_sml' },
+            { from: 'assets/textures/Dice Texture.png', to: 'assets/textures/Dice Texture.png' },
+            { from: 'assets/textures/Table Baked.jpg', to: 'assets/textures/Table Baked.jpg' },
             { from: 'assets/Scene.babylon', to: 'assets/Scene.babylon' },
             { from: 'assets/Scene.babylon.manifest', to: 'assets/Scene.babylon.manifest' },
         ]),
