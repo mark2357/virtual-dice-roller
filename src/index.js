@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+
+//load root scss file
 import './css/index.scss';
 
 // main app

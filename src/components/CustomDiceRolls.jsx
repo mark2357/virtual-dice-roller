@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import '../css/customDiceRolls.scss';
+
 import { Button } from './generics/Button';
 import { CustomRollsDataProps } from '../propTypes/CustomRollsDataProps';
 

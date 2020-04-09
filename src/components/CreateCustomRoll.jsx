@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import '../css/createCustomRoll.scss';
-
 import calculateCustomDiceRollResult from '../helpers/calculateCustomDiceRollResult';
 
 import { ValueCounter } from './generics/ValueCounter';
@@ -159,7 +157,7 @@ export default class CreateCustomRoll extends Component {
             <div className='create-custom-roll'>
                 <div className='create-custom-roll-panel'>
                     <div className='header'>
-                        <h2>{createNew ? 'Create New Custom Roll' : 'Edit Custom Roll'}</h2>
+                        <h2 className='title'>{createNew ? 'Create New Custom Roll' : 'Edit Custom Roll'}</h2>
                     </div>
                     <hr />
                     <div className='content-container'>
@@ -199,14 +197,12 @@ export default class CreateCustomRoll extends Component {
                             </div>
                         </div>
                         {!createNew && (
-                            <div className='delete-button-wrapper'>
                                 <Button className='button-long' onClick={() => { onDelete(); }}>
                                     <div className='icon-wrapper'>
                                         <span>Delete</span>
                                         <FontAwesomeIcon icon='trash-alt' />
                                     </div>
                                 </Button>
-                            </div>
                         )}
                     </div>
                     <hr />

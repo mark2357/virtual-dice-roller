@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-
-import '../../css/generics/button.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export const Button = (props) => {

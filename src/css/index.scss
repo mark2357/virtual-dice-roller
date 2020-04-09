@@ -1,4 +1,17 @@
 
+@import './app.scss';
+@import './createCustomRoll.scss';
+@import './customDiceRolls.scss';
+@import './diceButtons.scss';
+@import './page.scss';
+@import './resultPanel.scss';
+
+// generics
+@import './generics/button.scss';
+@import './generics/valueCounter.scss';
+
+
+
 
 html, body {
     margin: 0;
@@ -11,3 +24,4 @@ canvas {
     width: 100%;
     height: 100%;
 }
+

@@ -1,10 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Button } from './Button';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-
-import '../../css/generics/ValueCounter.scss';
 
 export const ValueCounter = (props) => {
     const { className, children, onClick } = props;
