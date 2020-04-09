@@ -166,25 +166,25 @@ export default class CreateCustomRoll extends Component {
                             <input className='name-input' type='text' minLength="0" maxLength="25" value={customRollName} onChange={this.handleNameChange} />
                         </div>
                         <div className='counter-wrapper'>
-                            <ValueCounter onClick={(deltaValue) => this.handleCounterOnclick(20, deltaValue)}>
+                            <ValueCounter className='auto-shrink' onClick={(deltaValue) => this.handleCounterOnclick(20, deltaValue)}>
                                 <span>{d20Count}D20</span>
                             </ValueCounter>
-                            <ValueCounter onClick={(deltaValue) => this.handleCounterOnclick(12, deltaValue)}>
+                            <ValueCounter className='auto-shrink' onClick={(deltaValue) => this.handleCounterOnclick(12, deltaValue)}>
                                 <span>{d12Count}D12</span>
                             </ValueCounter>
-                            <ValueCounter onClick={(deltaValue) => this.handleCounterOnclick(10, deltaValue)}>
+                            <ValueCounter className='auto-shrink' onClick={(deltaValue) => this.handleCounterOnclick(10, deltaValue)}>
                                 <span>{d10Count}D10</span>
                             </ValueCounter>
-                            <ValueCounter onClick={(deltaValue) => this.handleCounterOnclick(8, deltaValue)}>
+                            <ValueCounter  className='auto-shrink'  onClick={(deltaValue) => this.handleCounterOnclick(8, deltaValue)}>
                                 <span>{d8Count}D8</span>
                             </ValueCounter>
-                            <ValueCounter onClick={(deltaValue) => this.handleCounterOnclick(6, deltaValue)}>
+                            <ValueCounter  className='auto-shrink' onClick={(deltaValue) => this.handleCounterOnclick(6, deltaValue)}>
                                 <span>{d6Count}D6</span>
                             </ValueCounter>
-                            <ValueCounter onClick={(deltaValue) => this.handleCounterOnclick(4, deltaValue)}>
+                            <ValueCounter  className='auto-shrink' onClick={(deltaValue) => this.handleCounterOnclick(4, deltaValue)}>
                                 <span>{d4Count}D4</span>
                             </ValueCounter>
-                            <ValueCounter onClick={(deltaValue) => this.handleCounterOnclick(0, deltaValue)}>
+                            <ValueCounter  className='auto-shrink' onClick={(deltaValue) => this.handleCounterOnclick(0, deltaValue)}>
                                 <span>{`${bonusCount >= 0 ? '+' : ''}${bonusCount}`}</span>
                             </ValueCounter>
                         </div>

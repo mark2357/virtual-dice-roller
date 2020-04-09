@@ -1,10 +1,18 @@
 .value-counter {
-
-    .value-container{
+    .value-container {
         width: 4em;
         height: 4em;
         display: flex;
         justify-content: center;
         align-items: center;
+    }
+
+    //used as the nested flex system used in create custom roll doesn't correctly shrink
+    @media only screen and (max-height: 40em) {
+        &.auto-shrink {
+            .value-container {
+                height: 1em;
+            }
+        }
     }
 }
