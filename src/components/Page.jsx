@@ -580,7 +580,7 @@ export default class Page extends Component {
         } = this.state;
 
         return (
-            <div className='scene-container'>
+            <div className='page'>
                 <Scene
                     onSceneMount={this.handleSceneMount}
                 />

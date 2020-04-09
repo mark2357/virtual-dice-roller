@@ -67,7 +67,7 @@ export default class Scene extends React.Component {
         }
 
         return (
-            <canvas
+            <canvas className='scene'
                 {...opts}
                 ref={this.onCanvasLoaded}
             />
