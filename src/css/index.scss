@@ -1,6 +1,5 @@
 
 @import './page-container.scss';
-@import './create-custom-roll.scss';
 @import './custom-dice-rolls.scss';
 @import './dice-buttons.scss';
 @import './page.scss';
@@ -10,9 +9,13 @@
 // generics
 @import './generics/button.scss';
 @import './generics/value-counter.scss';
+@import './generics/panel-header.scss';
+@import './generics/panel-footer.scss';
 
-
-
+// fullscreen panels
+@import './fullscreenPanels/create-custom-roll-panel.scss';
+@import './fullscreenPanels/fullscreen-panel-frame.scss';
+@import './fullscreenPanels/setting-panel.scss';
 
 html, body {
     margin: 0;

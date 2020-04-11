@@ -1,0 +1,22 @@
+.panel-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #09c;
+    text-align: center;
+    flex-grow: 0;
+    flex-shrink: 1;
+    height: 4em;
+    flex-direction: column;
+    width: 100%;
+
+    .title {
+        margin: 0;
+    }
+}
+.panel-header-hr {
+    color: #09c;
+    width: 95%;
+    margin-top: 0;
+    margin-bottom: 0;
+}

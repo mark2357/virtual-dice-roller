@@ -26,6 +26,13 @@
         }
         .bottom-row-container {
             flex-grow: 0;
+            justify-content: space-between;
+            display: flex;
+            align-items: flex-end;
+            .setting-button-wrapper {
+                margin-right: 1em;
+                margin-bottom: 1em;
+            }
         }
     }
 }

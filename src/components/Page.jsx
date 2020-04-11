@@ -14,10 +14,10 @@ import Scene from './Scene';
 import DiceRollTotalCounter from '../DiceRollTotalCounter';
 import ResultPanel from './ResultPanel';
 import CustomDiceRolls from './CustomDiceRolls';
-import CreateCustomRoll from './CreateCustomRoll';
 
 import calcRandomVectorBetween from '../helpers/calcRandomVectorBetween';
 import calculateCustomDiceRollResult from '../helpers/calculateCustomDiceRollResult';
+import SettingsButton from './SettingButton';
 
 
 export default class Page extends Component {
@@ -29,8 +29,6 @@ export default class Page extends Component {
             diceRollArray: [],
             resultPanelVisible: false,
             resultText: '',
-            displayCustomRollPanel: false,
-            currentlyEditingCustomRollIndex: -1, // -1 for new
             customRollsData: this.loadCustomRolls(),
         }
 
@@ -469,34 +467,21 @@ export default class Page extends Component {
 
     /**
      * @description
-     * handles when a edit custom roll or new custom roll button is pressed
-     * @param {number} customRollIndex the index of the custom roll to use
-     */
-    handleEditCustomDiceRollClick = (customRollIndex) => {
-        this.setState({
-            displayCustomRollPanel: true,
-            currentlyEditingCustomRollIndex: customRollIndex
-        });
-    }
-
-    /**
-     * @description
      * handles saving new custom roll data
      * @param {{name: string, diceRollArray: number, customResultCalculation: string} | null} saveData
      */
-    handleSaveCustomRollClick = (saveData) => {
-        const { currentlyEditingCustomRollIndex, customRollsData } = this.state;
-        const stateChange = {
-            displayCustomRollPanel: false,
-            currentlyEditingCustomRollIndex: -1,
-        };
+    handleSaveCustomRollClick = (saveData, index) => {
+        console.log('handleSaveCustomRollClick', saveData, index);
+        const { customRollsData } = this.state;
+        const stateChange = {};
 
         //TODO: fix this as it is technically mutating the state
-        // -1 is used to represent new custom roll
-        if (currentlyEditingCustomRollIndex === -1)
+        // null is used to represent new custom roll
+        if (index === null)
             customRollsData.push(saveData);
         else
-            customRollsData[currentlyEditingCustomRollIndex] = saveData;
+            customRollsData[index] = saveData;
+
         stateChange.customRollsData = customRollsData;
 
         this.setState(stateChange, () => {
@@ -508,27 +493,14 @@ export default class Page extends Component {
      * @description
      * handles when a custom roll is deleted
      */
-    handleDeleteCustomRollClick = () => {
-        const { currentlyEditingCustomRollIndex, customRollsData } = this.state;
+    handleDeleteCustomRollClick = (index) => {
+        const { customRollsData } = this.state;
 
-        const newCustomRollsData = customRollsData.filter((customRollData, index) => index !== currentlyEditingCustomRollIndex);
+        const newCustomRollsData = customRollsData.filter((customRollData, i) => i !== index);
         this.setState({
-            displayCustomRollPanel: false,
-            currentlyEditingCustomRollIndex: -1,
             customRollsData: newCustomRollsData,
         }, () => {
             this.saveCustomRolls();
-        });
-    }
-
-    /**
-     * @description
-     * handles when a custom roll is edited
-     */
-    handleCancelCustomRollClick = () => {
-        this.setState({
-            displayCustomRollPanel: false,
-            currentlyEditingCustomRollIndex: -1,
         });
     }
 
@@ -572,10 +544,8 @@ export default class Page extends Component {
     render() {
 
         const {
-            displayCustomRollPanel,
             resultPanelVisible,
             resultText,
-            currentlyEditingCustomRollIndex,
             customRollsData
         } = this.state;
 
@@ -592,28 +562,23 @@ export default class Page extends Component {
                             onClick={this.handleDiceRollButtonOnClick}
                         />
                         <CustomDiceRolls
+                            onSave={this.handleSaveCustomRollClick}
+                            onDelete={this.handleDeleteCustomRollClick}
                             onDiceRollClick={this.handleDiceRollButtonOnClick}
                             onEditCustomDiceRollClick={this.handleEditCustomDiceRollClick}
                             customRollsData={customRollsData}
                         />
                     </div>
 
-                    {displayCustomRollPanel && (
-                        <CreateCustomRoll
-                            onSave={this.handleSaveCustomRollClick}
-                            onDelete={this.handleDeleteCustomRollClick}
-                            onCancel={this.handleCancelCustomRollClick}
-                            createNew={currentlyEditingCustomRollIndex === -1}
-                            customRollData={currentlyEditingCustomRollIndex === -1 ? null : customRollsData[currentlyEditingCustomRollIndex]}
-                        />
-                    )}
-
                     <div className='bottom-row-container'>
                         <ResultPanel
                             resultText={resultText}
-                            resultPanelVisible={resultPanelVisible && !displayCustomRollPanel}
+                            resultPanelVisible={resultPanelVisible}
                             hideResultPanel={this.hideResultPanel}
                         />
+                        <div className='setting-button-wrapper'>
+                            <SettingsButton/>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -2,14 +2,17 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import calculateCustomDiceRollResult from '../helpers/calculateCustomDiceRollResult';
+import calculateCustomDiceRollResult from '../../helpers/calculateCustomDiceRollResult';
 
-import { ValueCounter } from './generics/ValueCounter';
-import { Button } from './generics/Button';
-import { CustomRollsDataProps, CustomRollsDataDefaultProps } from '../propTypes/CustomRollsDataProps';
+import { ValueCounter } from '../generics/ValueCounter';
+import { Button } from '../generics/Button';
+import { CustomRollsDataProps, CustomRollsDataDefaultProps } from '../../propTypes/CustomRollsDataProps';
 
+import { withFullScreenPanelContext } from '../providers/FullScreenPanelProvider';
+import { FullScreenPanelDataProps } from '../../propTypes/FullScreenPanelDataProps';
+import { FullscreenPanelFrame } from './FullscreenPanelFrame';
 
-export default class CreateCustomRoll extends Component {
+class CreateCustomRollPanel extends Component {
 
     constructor(props) {
         super(props);
@@ -147,14 +150,15 @@ export default class CreateCustomRoll extends Component {
             d20Count, d12Count, d10Count, d8Count, d6Count, d4Count, bonusCount, customRollName,
         } = this.state;
 
-        const { createNew, onSave, onDelete, onCancel } = this.props;
+        const { createNew, onSave, onDelete, fullScreenPanelData, index } = this.props;
 
         const minRoll = d20Count + d12Count + d10Count + d8Count + d6Count + d4Count + bonusCount;
         const maxRoll = d20Count * 20 + d12Count * 12 + d10Count * 10 + d8Count * 8 + d6Count * 6 + d4Count * 4 + bonusCount;
         const avgRoll = minRoll + ((maxRoll - minRoll) / 2);
 
+
         return (
-            <div className='create-custom-roll'>
+            <FullscreenPanelFrame>
                 <div className='create-custom-roll-panel'>
                     <div className='header'>
                         <h2 className='title'>{createNew ? 'Create New Custom Roll' : 'Edit Custom Roll'}</h2>
@@ -175,16 +179,16 @@ export default class CreateCustomRoll extends Component {
                             <ValueCounter className='auto-shrink' onClick={(deltaValue) => this.handleCounterOnclick(10, deltaValue)}>
                                 <span>{d10Count}D10</span>
                             </ValueCounter>
-                            <ValueCounter  className='auto-shrink'  onClick={(deltaValue) => this.handleCounterOnclick(8, deltaValue)}>
+                            <ValueCounter className='auto-shrink' onClick={(deltaValue) => this.handleCounterOnclick(8, deltaValue)}>
                                 <span>{d8Count}D8</span>
                             </ValueCounter>
-                            <ValueCounter  className='auto-shrink' onClick={(deltaValue) => this.handleCounterOnclick(6, deltaValue)}>
+                            <ValueCounter className='auto-shrink' onClick={(deltaValue) => this.handleCounterOnclick(6, deltaValue)}>
                                 <span>{d6Count}D6</span>
                             </ValueCounter>
-                            <ValueCounter  className='auto-shrink' onClick={(deltaValue) => this.handleCounterOnclick(4, deltaValue)}>
+                            <ValueCounter className='auto-shrink' onClick={(deltaValue) => this.handleCounterOnclick(4, deltaValue)}>
                                 <span>{d4Count}D4</span>
                             </ValueCounter>
-                            <ValueCounter  className='auto-shrink' onClick={(deltaValue) => this.handleCounterOnclick(0, deltaValue)}>
+                            <ValueCounter className='auto-shrink' onClick={(deltaValue) => this.handleCounterOnclick(0, deltaValue)}>
                                 <span>{`${bonusCount >= 0 ? '+' : ''}${bonusCount}`}</span>
                             </ValueCounter>
                         </div>
@@ -197,23 +201,23 @@ export default class CreateCustomRoll extends Component {
                             </div>
                         </div>
                         {!createNew && (
-                                <Button className='button-long' onClick={() => { onDelete(); }}>
-                                    <div className='icon-wrapper'>
-                                        <span>Delete</span>
-                                        <FontAwesomeIcon icon='trash-alt' />
-                                    </div>
-                                </Button>
+                            <Button className='button-long' onClick={() => { onDelete(index); fullScreenPanelData.closePanel(); }}>
+                                <div className='icon-wrapper'>
+                                    <span>Delete</span>
+                                    <FontAwesomeIcon icon='trash-alt' />
+                                </div>
+                            </Button>
                         )}
                     </div>
                     <hr />
                     <div className='footer'>
-                        <Button className='button-long' onClick={() => { onSave(this.getSaveData()); }}>
+                        <Button className='button-long' onClick={() => { onSave(this.getSaveData(), index); fullScreenPanelData.closePanel(); }}>
                             <div className='icon-wrapper'>
                                 <span>Save</span>
                                 <FontAwesomeIcon icon='save' />
                             </div>
                         </Button>
-                        <Button className='button-long' onClick={() => { onCancel(); }}>
+                        <Button className='button-long' onClick={() => { fullScreenPanelData.closePanel(); }}>
                             <div className='icon-wrapper'>
                                 <span>Cancel</span>
                                 <FontAwesomeIcon icon='times' />
@@ -221,19 +225,22 @@ export default class CreateCustomRoll extends Component {
                         </Button>
                     </div>
                 </div>
-            </div>
+            </FullscreenPanelFrame>
         );
     }
 }
 
-CreateCustomRoll.propTypes = {
+CreateCustomRollPanel.propTypes = {
     onSave: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
-    onCancel: PropTypes.func.isRequired,
     createNew: PropTypes.bool.isRequired,
-    customRollData: CustomRollsDataProps,
+    customRollData: PropTypes.shape(CustomRollsDataProps).isRequired,
+    fullScreenPanelData: PropTypes.shape(FullScreenPanelDataProps).isRequired,
+    index: PropTypes.number,
 };
 
-CreateCustomRoll.defaultProps = {
+CreateCustomRollPanel.defaultProps = {
     customRollData: CustomRollsDataDefaultProps,
 }
+
+export default withFullScreenPanelContext(CreateCustomRollPanel);

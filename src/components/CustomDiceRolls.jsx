@@ -5,8 +5,12 @@ import PropTypes from 'prop-types';
 
 import { Button } from './generics/Button';
 import { CustomRollsDataProps } from '../propTypes/CustomRollsDataProps';
+import { withFullScreenPanelContext } from './providers/FullScreenPanelProvider';
 
-export default class CustomDiceRolls extends Component {
+import { PANEL_TYPES } from '../constants/PanelTypes';
+import { FullScreenPanelDataProps } from '../propTypes/FullScreenPanelDataProps';
+
+class CustomDiceRolls extends Component {
 
     constructor(props) {
         super(props);
@@ -83,11 +87,40 @@ export default class CustomDiceRolls extends Component {
     }
 
     /**
+     * @description
+     * shows the p
+     */
+    handleShowCreateCustomRollPanel = (index) => {
+        const {customRollsData, fullScreenPanelData, onDelete, onSave} = this.props;
+
+        //creating new custom roll
+        if(index === -1) {
+            fullScreenPanelData.showPanel(PANEL_TYPES.CREATE_CUSTOM_ROLL_PANEL, {
+                onSave,
+                onDelete,
+                createNew: true,
+                index: null,
+            });
+        }
+        // editing existing custom roll
+        else {
+            fullScreenPanelData.showPanel(PANEL_TYPES.CREATE_CUSTOM_ROLL_PANEL, {
+                onSave,
+                onDelete,
+                createNew: false,
+                customRollData: customRollsData[index],
+                index,
+            });
+        }
+    }
+
+
+    /**
      * @inheritdoc
      */
     render() {
         const { buttonsHidden, editMode } = this.state;
-        const { onEditCustomDiceRollClick, customRollsData } = this.props;
+        const { customRollsData } = this.props;
 
         const customRollsButtons = [];
         customRollsData.forEach((customRollData, index) => {
@@ -95,7 +128,7 @@ export default class CustomDiceRolls extends Component {
                 <div className='custom-roll-row' key={index}>
                     <Button
                         className={`${editMode ? '' : 'hidden'}`}
-                        onClick={() => { onEditCustomDiceRollClick(index); }}
+                        onClick={() => {this.handleShowCreateCustomRollPanel(index); }}
                         icon='edit'
                     />
                     <Button
@@ -117,7 +150,10 @@ export default class CustomDiceRolls extends Component {
                 />
                 <div ref={this.hideableButtonRef} className='hideable-buttons-container' style={this.getOffset()}>
                     <div className='edit-buttons-row'>
-                        <Button onClick={() => { onEditCustomDiceRollClick(-1); }} icon='plus' />
+                        <Button
+                            icon='plus'
+                            onClick={() => {this.handleShowCreateCustomRollPanel(-1); }}
+                        />
                         <Button className={editMode ? 'toggled-enabled' : 'toggled-disabled'} onClick={this.handleToggleEditMode} icon='edit' />
                     </div>
                     <Button className='button-long' onClick={() => { this.handleRollDiceClick([20, 20], 'MAX(@D, @D)'); }}><span>Roll Advantage</span></Button>
@@ -130,7 +166,12 @@ export default class CustomDiceRolls extends Component {
 }
 
 CustomDiceRolls.propTypes = {
+    onSave: PropTypes.func.isRequired,
+    onDelete: PropTypes.func.isRequired,
     onDiceRollClick: PropTypes.func.isRequired,
-    onEditCustomDiceRollClick: PropTypes.func.isRequired,
-    customRollsData: PropTypes.arrayOf(CustomRollsDataProps),
+    customRollsData: PropTypes.arrayOf(PropTypes.shape(CustomRollsDataProps)),
+    fullScreenPanelData: PropTypes.shape(FullScreenPanelDataProps).isRequired,
 };
+
+
+export default withFullScreenPanelContext(CustomDiceRolls);
