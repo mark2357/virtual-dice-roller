@@ -320,7 +320,7 @@ export default class Page extends Component {
         const { customRollsData } = this.state;
         localStorage.setItem('customRolls', JSON.stringify(customRollsData));
     }
-    
+
     /**
      * @description
      * returns the custom roll data from the state
@@ -328,7 +328,7 @@ export default class Page extends Component {
      */
     loadCustomRolls = () => {
         const jsonData = localStorage.getItem('customRolls');
-        if(jsonData !== null) {
+        if (jsonData !== null) {
             const data = JSON.parse(jsonData);
             return data;
         }
@@ -516,7 +516,7 @@ export default class Page extends Component {
             displayCustomRollPanel: false,
             currentlyEditingCustomRollIndex: -1,
             customRollsData: newCustomRollsData,
-        },  () => {
+        }, () => {
             this.saveCustomRolls();
         });
     }
@@ -584,31 +584,38 @@ export default class Page extends Component {
                 <Scene
                     onSceneMount={this.handleSceneMount}
                 />
-                <DiceButtons
-                    onClick={this.handleDiceRollButtonOnClick}
-                />
-                <CustomDiceRolls
-                    onDiceRollClick={this.handleDiceRollButtonOnClick}
-                    onEditCustomDiceRollClick={this.handleEditCustomDiceRollClick}
-                    customRollsData={customRollsData}
-                />
 
+                <div className='ui-container'>
+                    <div className='side-buttons-container'>
 
-                {displayCustomRollPanel && (
-                    <CreateCustomRoll
-                        onSave={this.handleSaveCustomRollClick}
-                        onDelete={this.handleDeleteCustomRollClick}
-                        onCancel={this.handleCancelCustomRollClick}
-                        createNew={currentlyEditingCustomRollIndex === -1}
-                        customRollData={currentlyEditingCustomRollIndex === -1 ? null : customRollsData[currentlyEditingCustomRollIndex]}
-                    />
-                )}
+                        <DiceButtons
+                            onClick={this.handleDiceRollButtonOnClick}
+                        />
+                        <CustomDiceRolls
+                            onDiceRollClick={this.handleDiceRollButtonOnClick}
+                            onEditCustomDiceRollClick={this.handleEditCustomDiceRollClick}
+                            customRollsData={customRollsData}
+                        />
+                    </div>
 
-                <ResultPanel
-                    resultText={resultText}
-                    resultPanelVisible={resultPanelVisible && !displayCustomRollPanel}
-                    hideResultPanel={this.hideResultPanel}
-                />
+                    {displayCustomRollPanel && (
+                        <CreateCustomRoll
+                            onSave={this.handleSaveCustomRollClick}
+                            onDelete={this.handleDeleteCustomRollClick}
+                            onCancel={this.handleCancelCustomRollClick}
+                            createNew={currentlyEditingCustomRollIndex === -1}
+                            customRollData={currentlyEditingCustomRollIndex === -1 ? null : customRollsData[currentlyEditingCustomRollIndex]}
+                        />
+                    )}
+
+                    <div className='bottom-row-container'>
+                        <ResultPanel
+                            resultText={resultText}
+                            resultPanelVisible={resultPanelVisible && !displayCustomRollPanel}
+                            hideResultPanel={this.hideResultPanel}
+                        />
+                    </div>
+                </div>
             </div>
         );
     }

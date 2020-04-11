@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import './css/index.scss';
 
 // main app
-import App from './components/App.jsx';
+import PageContainer from './components/PageContainer.jsx';
 
 //load font awesome icons
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -25,4 +25,4 @@ if ('serviceWorker' in navigator) {
 else console.log('SW registration failed, no service worker in navigator');
 
 
-ReactDOM.render(<App />, document.getElementById('app'));
+ReactDOM.render(<PageContainer />, document.getElementById('app'));

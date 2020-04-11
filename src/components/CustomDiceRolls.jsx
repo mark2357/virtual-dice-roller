@@ -69,7 +69,7 @@ export default class CustomDiceRolls extends Component {
             return {};
         }
         else {
-            return { right: `calc(${-buttonsWidth}px - 1em)` };
+            return { 'margin-right': `calc(${-buttonsWidth}px - 1em)` };
         }
     }
 
@@ -111,7 +111,7 @@ export default class CustomDiceRolls extends Component {
         return (
             <div className='custom-dice-rolls'>
                 <Button
-                    className='hide-show-button'
+                    className='hide-show-button no-shrink'
                     onClick={this.handleChangeVisibilityClick}
                     icon={buttonsHidden ? 'chevron-left' : 'chevron-right'}
                 />

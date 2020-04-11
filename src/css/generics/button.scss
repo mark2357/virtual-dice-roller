@@ -18,6 +18,10 @@
             color: white;
         }
     }
+
+    &.no-shrink {
+        flex-shrink: 0;
+    }
     &.button-long {
         width: 7.6em;
     }

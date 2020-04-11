@@ -1,9 +1,6 @@
 .dice-buttons {
-    position: absolute;
-    top: 1em;
-    left: 1em;
-    bottom: 1em;
-    right: 1em;
+    position: relative;
+    height: 100%;
     pointer-events: none;
     display: flex;
     flex-direction: column;
@@ -12,23 +9,26 @@
         position: relative;
     }
     
-    .buttons-container {
-        position: relative;
+    // .buttons-container {
+        // position: relative;
         flex-grow: 1;
         
         .hideable-buttons-container {
-            position: absolute;
+            position: relative;
             display: flex;
             align-items: flex-start;
             justify-content: flex-start;
-            flex-direction: column;
+            writing-mode: vertical-lr;
+            width: fit-content;
             transition: left 0.5s ease;
-            bottom: 0em;
-            top: 0em;
-            left: 0em;
             flex-wrap: wrap;
+            left: 0;
+
+            > button {
+                writing-mode: initial;
+            }
         }
-    }
+    // }
 }
 
 

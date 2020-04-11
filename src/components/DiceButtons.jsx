@@ -10,7 +10,7 @@ export default class DiceButtons extends Component {
         super(props);
 
         this.state = {
-            customNumber: 3, // the custom number of dice to roll
+            customNumber: 1, // the custom number of dice to roll
             buttonsHidden: false,
             buttonsWidth: 0, // the buttons width in px
         }
@@ -105,21 +105,19 @@ export default class DiceButtons extends Component {
         return (
             <div className='dice-buttons'>
                 <Button
-                    className='hide-show-button'
+                    className='hide-show-button no-shrink'
                     onClick={this.handleChangeVisibilityClick}
-                    icon={buttonsHidden ? 'chevron-right' : 'chevron-left'} /
-                >
-                <div className='buttons-container'>
-                    <div ref={this.hideableButtonRef} className='hideable-buttons-container' style={this.getOffset()}>
-                        <Button onClick={() => { this.handleCustomNumberChangeClick(true); }} icon='plus' />
-                        <Button onClick={() => { this.handleCustomNumberChangeClick(false); }} icon='minus' />
-                        <Button onClick={() => { this.handleRollDiceClick(4, customNumber) }}>{customNumber} D4</Button>
-                        <Button onClick={() => { this.handleRollDiceClick(6, customNumber) }}>{customNumber} D6</Button>
-                        <Button onClick={() => { this.handleRollDiceClick(8, customNumber) }}>{customNumber} D8</Button>
-                        <Button onClick={() => { this.handleRollDiceClick(10, customNumber) }}>{customNumber} D10</Button>
-                        <Button onClick={() => { this.handleRollDiceClick(12, customNumber) }}>{customNumber} D12</Button>
-                        <Button onClick={() => { this.handleRollDiceClick(20, customNumber) }}>{customNumber} D20</Button>
-                    </div>
+                    icon={buttonsHidden ? 'chevron-right' : 'chevron-left'}
+                />
+                <div ref={this.hideableButtonRef} className='hideable-buttons-container' style={this.getOffset()}>
+                    <Button onClick={() => { this.handleCustomNumberChangeClick(true); }} icon='plus' />
+                    <Button onClick={() => { this.handleCustomNumberChangeClick(false); }} icon='minus' />
+                    <Button onClick={() => { this.handleRollDiceClick(4, customNumber) }}>{customNumber} D4</Button>
+                    <Button onClick={() => { this.handleRollDiceClick(6, customNumber) }}>{customNumber} D6</Button>
+                    <Button onClick={() => { this.handleRollDiceClick(8, customNumber) }}>{customNumber} D8</Button>
+                    <Button onClick={() => { this.handleRollDiceClick(10, customNumber) }}>{customNumber} D10</Button>
+                    <Button onClick={() => { this.handleRollDiceClick(12, customNumber) }}>{customNumber} D12</Button>
+                    <Button onClick={() => { this.handleRollDiceClick(20, customNumber) }}>{customNumber} D20</Button>
                 </div>
             </div>
         );
