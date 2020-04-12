@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import Page from './Page.jsx';
 import { FullScreenPanelProvider } from './providers/FullScreenPanelProvider.jsx';
+import { PersistentDataProvider } from './providers/PersistentDataProvider.jsx';
 import FullScreenPanelDisplay from './FullScreenPanelDisplay.jsx';
 
 export default class PageContainer extends Component {
@@ -9,8 +10,10 @@ export default class PageContainer extends Component {
         return (
             <div className='page-container'>
                 <FullScreenPanelProvider>
-                    <Page/>
-                    <FullScreenPanelDisplay />
+                    <PersistentDataProvider>
+                        <Page />
+                        <FullScreenPanelDisplay />
+                    </PersistentDataProvider>
                 </FullScreenPanelProvider>
             </div>
         );

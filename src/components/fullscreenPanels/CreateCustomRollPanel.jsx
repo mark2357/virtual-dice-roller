@@ -6,11 +6,16 @@ import calculateCustomDiceRollResult from '../../helpers/calculateCustomDiceRoll
 
 import { ValueCounter } from '../generics/ValueCounter';
 import { Button } from '../generics/Button';
-import { CustomRollsDataProps, CustomRollsDataDefaultProps } from '../../propTypes/CustomRollsDataProps';
+import { CustomRollDataProps, CustomRollDataDefaultProps } from '../../propTypes/CustomRollDataProps';
+
 
 import { withFullScreenPanelContext } from '../providers/FullScreenPanelProvider';
+import { withPersistentDataContext } from '../providers/PersistentDataProvider';
+
 import { FullScreenPanelDataProps } from '../../propTypes/FullScreenPanelDataProps';
 import { FullscreenPanelFrame } from './FullscreenPanelFrame';
+import { PersistentDataProps } from '../../propTypes/PersistentDataProps';
+
 
 class CreateCustomRollPanel extends Component {
 
@@ -18,13 +23,19 @@ class CreateCustomRollPanel extends Component {
         super(props);
 
         const {
-            customRollData,
+            persistentData,
             createNew,
+            index
         } = props;
 
+        let customRollData = [];
 
         let bonusCount = 0;
         if (createNew === false) {
+
+            const { customRollsData } = persistentData;
+            customRollData = customRollsData[index];
+    
             const {
                 customResultCalculation,
             } = customRollData;
@@ -144,13 +155,49 @@ class CreateCustomRollPanel extends Component {
         this.setState({ customRollName: e.target.value });
     }
 
+    /**
+     * @description
+     * handles saving new custom roll data
+     * @param {{name: string, diceRollArray: number, customResultCalculation: string} | null} saveData
+     */
+    handleSaveClick = () => {
+        const { fullScreenPanelData, persistentData, index } = this.props;
+        const { customRollsData } = persistentData;
+        const saveData = this.getSaveData();
+        
+
+        //TODO: fix this as it is technically mutating the state
+        // null is used to represent new custom roll
+        if (index === null)
+            customRollsData.push(saveData);
+        else
+            customRollsData[index] = saveData;
+
+
+        persistentData.setCustomDiceRolls(customRollsData);
+        fullScreenPanelData.closePanel();
+    }
+
+    /**
+     * @description
+     * handles when a custom roll is deleted
+     */
+    handleDeleteClick = () => {
+        const { fullScreenPanelData, persistentData, index } = this.props;
+        const { customRollsData } = persistentData;
+
+        const newCustomRollsData = customRollsData.filter((customRollData, i) => i !== index);
+        persistentData.setCustomDiceRolls(newCustomRollsData);
+        fullScreenPanelData.closePanel();
+    }
+
     render() {
 
         const {
             d20Count, d12Count, d10Count, d8Count, d6Count, d4Count, bonusCount, customRollName,
         } = this.state;
 
-        const { createNew, onSave, onDelete, fullScreenPanelData, index } = this.props;
+        const { createNew, fullScreenPanelData } = this.props;
 
         const minRoll = d20Count + d12Count + d10Count + d8Count + d6Count + d4Count + bonusCount;
         const maxRoll = d20Count * 20 + d12Count * 12 + d10Count * 10 + d8Count * 8 + d6Count * 6 + d4Count * 4 + bonusCount;
@@ -201,7 +248,7 @@ class CreateCustomRollPanel extends Component {
                             </div>
                         </div>
                         {!createNew && (
-                            <Button className='button-long' onClick={() => { onDelete(index); fullScreenPanelData.closePanel(); }}>
+                            <Button className='button-long' onClick={this.handleDeleteClick}>
                                 <div className='icon-wrapper'>
                                     <span>Delete</span>
                                     <FontAwesomeIcon icon='trash-alt' />
@@ -211,7 +258,7 @@ class CreateCustomRollPanel extends Component {
                     </div>
                     <hr />
                     <div className='footer'>
-                        <Button className='button-long' onClick={() => { onSave(this.getSaveData(), index); fullScreenPanelData.closePanel(); }}>
+                        <Button className='button-long' onClick={this.handleSaveClick}>
                             <div className='icon-wrapper'>
                                 <span>Save</span>
                                 <FontAwesomeIcon icon='save' />
@@ -231,16 +278,15 @@ class CreateCustomRollPanel extends Component {
 }
 
 CreateCustomRollPanel.propTypes = {
-    onSave: PropTypes.func.isRequired,
-    onDelete: PropTypes.func.isRequired,
     createNew: PropTypes.bool.isRequired,
-    customRollData: PropTypes.shape(CustomRollsDataProps).isRequired,
-    fullScreenPanelData: PropTypes.shape(FullScreenPanelDataProps).isRequired,
+    customRollData: PropTypes.shape(CustomRollDataProps).isRequired,
     index: PropTypes.number,
+    fullScreenPanelData: PropTypes.shape(FullScreenPanelDataProps).isRequired,
+    persistentData: PropTypes.shape(PersistentDataProps).isRequired,    
 };
 
 CreateCustomRollPanel.defaultProps = {
-    customRollData: CustomRollsDataDefaultProps,
+    customRollData: CustomRollDataDefaultProps,
 }
 
-export default withFullScreenPanelContext(CreateCustomRollPanel);
+export default withPersistentDataContext(withFullScreenPanelContext(CreateCustomRollPanel));

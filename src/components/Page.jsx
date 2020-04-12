@@ -29,7 +29,6 @@ export default class Page extends Component {
             diceRollArray: [],
             resultPanelVisible: false,
             resultText: '',
-            customRollsData: this.loadCustomRolls(),
         }
 
         this.dice = {
@@ -312,30 +311,6 @@ export default class Page extends Component {
 
     /**
      * @description
-     * saves the custom RollData from the the state to local storage
-     */
-    saveCustomRolls = () => {
-        const { customRollsData } = this.state;
-        localStorage.setItem('customRolls', JSON.stringify(customRollsData));
-    }
-
-    /**
-     * @description
-     * returns the custom roll data from the state
-     * @returns {{name: string, diceRollArray: Array<number>, customResultCalculation: string}}
-     */
-    loadCustomRolls = () => {
-        const jsonData = localStorage.getItem('customRolls');
-        if (jsonData !== null) {
-            const data = JSON.parse(jsonData);
-            return data;
-        }
-        return [];
-    }
-
-
-    /**
-     * @description
      * handles when the roll dice buttons are pressed
      * @param {Array<number>} diceSidesArray
      * @param {string | undefined} customResultCalculation custom way of calculating result 
@@ -464,46 +439,6 @@ export default class Page extends Component {
         this.GUIList.push(line);
     }
 
-
-    /**
-     * @description
-     * handles saving new custom roll data
-     * @param {{name: string, diceRollArray: number, customResultCalculation: string} | null} saveData
-     */
-    handleSaveCustomRollClick = (saveData, index) => {
-        console.log('handleSaveCustomRollClick', saveData, index);
-        const { customRollsData } = this.state;
-        const stateChange = {};
-
-        //TODO: fix this as it is technically mutating the state
-        // null is used to represent new custom roll
-        if (index === null)
-            customRollsData.push(saveData);
-        else
-            customRollsData[index] = saveData;
-
-        stateChange.customRollsData = customRollsData;
-
-        this.setState(stateChange, () => {
-            this.saveCustomRolls();
-        });
-    }
-
-    /**
-     * @description
-     * handles when a custom roll is deleted
-     */
-    handleDeleteCustomRollClick = (index) => {
-        const { customRollsData } = this.state;
-
-        const newCustomRollsData = customRollsData.filter((customRollData, i) => i !== index);
-        this.setState({
-            customRollsData: newCustomRollsData,
-        }, () => {
-            this.saveCustomRolls();
-        });
-    }
-
     /**
      * @description
      * displays the result of a dice roll
@@ -546,7 +481,6 @@ export default class Page extends Component {
         const {
             resultPanelVisible,
             resultText,
-            customRollsData
         } = this.state;
 
         return (
@@ -562,11 +496,7 @@ export default class Page extends Component {
                             onClick={this.handleDiceRollButtonOnClick}
                         />
                         <CustomDiceRolls
-                            onSave={this.handleSaveCustomRollClick}
-                            onDelete={this.handleDeleteCustomRollClick}
                             onDiceRollClick={this.handleDiceRollButtonOnClick}
-                            onEditCustomDiceRollClick={this.handleEditCustomDiceRollClick}
-                            customRollsData={customRollsData}
                         />
                     </div>
 

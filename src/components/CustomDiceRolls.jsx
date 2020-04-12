@@ -4,11 +4,12 @@ import PropTypes from 'prop-types';
 
 
 import { Button } from './generics/Button';
-import { CustomRollsDataProps } from '../propTypes/CustomRollsDataProps';
 import { withFullScreenPanelContext } from './providers/FullScreenPanelProvider';
+import { withPersistentDataContext } from './providers/PersistentDataProvider';
 
 import { PANEL_TYPES } from '../constants/PanelTypes';
 import { FullScreenPanelDataProps } from '../propTypes/FullScreenPanelDataProps';
+import { PersistentDataProps } from '../propTypes/PersistentDataProps';
 
 class CustomDiceRolls extends Component {
 
@@ -73,7 +74,7 @@ class CustomDiceRolls extends Component {
             return {};
         }
         else {
-            return { 'margin-right': `calc(${-buttonsWidth}px - 1em)` };
+            return { marginRight: `calc(${-buttonsWidth}px - 1em)` };
         }
     }
 
@@ -91,13 +92,12 @@ class CustomDiceRolls extends Component {
      * shows the p
      */
     handleShowCreateCustomRollPanel = (index) => {
-        const {customRollsData, fullScreenPanelData, onDelete, onSave} = this.props;
+        const {persistentData, fullScreenPanelData } = this.props;
+        const { customRollsData } = persistentData;
 
         //creating new custom roll
         if(index === -1) {
             fullScreenPanelData.showPanel(PANEL_TYPES.CREATE_CUSTOM_ROLL_PANEL, {
-                onSave,
-                onDelete,
                 createNew: true,
                 index: null,
             });
@@ -105,8 +105,6 @@ class CustomDiceRolls extends Component {
         // editing existing custom roll
         else {
             fullScreenPanelData.showPanel(PANEL_TYPES.CREATE_CUSTOM_ROLL_PANEL, {
-                onSave,
-                onDelete,
                 createNew: false,
                 customRollData: customRollsData[index],
                 index,
@@ -120,7 +118,8 @@ class CustomDiceRolls extends Component {
      */
     render() {
         const { buttonsHidden, editMode } = this.state;
-        const { customRollsData } = this.props;
+        const { persistentData } = this.props;
+        const { customRollsData } = persistentData;
 
         const customRollsButtons = [];
         customRollsData.forEach((customRollData, index) => {
@@ -166,12 +165,10 @@ class CustomDiceRolls extends Component {
 }
 
 CustomDiceRolls.propTypes = {
-    onSave: PropTypes.func.isRequired,
-    onDelete: PropTypes.func.isRequired,
     onDiceRollClick: PropTypes.func.isRequired,
-    customRollsData: PropTypes.arrayOf(PropTypes.shape(CustomRollsDataProps)),
     fullScreenPanelData: PropTypes.shape(FullScreenPanelDataProps).isRequired,
+    persistentData: PropTypes.shape(PersistentDataProps).isRequired,
 };
 
 
-export default withFullScreenPanelContext(CustomDiceRolls);
+export default withPersistentDataContext(withFullScreenPanelContext(CustomDiceRolls));
