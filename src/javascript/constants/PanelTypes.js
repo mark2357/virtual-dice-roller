@@ -5,4 +5,4 @@ const PANEL_TYPES = {
 
 
 
-module.exports = { PANEL_TYPES };
+module.exports = PANEL_TYPES;

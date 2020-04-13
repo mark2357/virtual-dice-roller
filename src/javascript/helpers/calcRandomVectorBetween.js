@@ -1,5 +1,9 @@
+// modules
 import * as BABYLON from '@babylonjs/core';
+
+// helpers
 import calcRandomFloatBetween from './calcRandomFloatBetween';
+
 /**
  * @description
  * calculates a random Vector between the passed in min and max values

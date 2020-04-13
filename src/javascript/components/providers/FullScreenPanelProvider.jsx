@@ -1,6 +1,9 @@
+// modules
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { PANEL_TYPES } from '../../constants/PanelTypes';
+
+//constants
+import PANEL_TYPES from '../../constants/PanelTypes';
 
 
 const FullScreenPanelContext = React.createContext();
@@ -73,14 +76,15 @@ FullScreenPanelProvider.propTypes = {
 
 
 const withFullScreenPanelContext = (Component) => {
+    // eslint-disable-next-line react/display-name
     return props => (
         <FullScreenPanelContext.Consumer>
-            { value => {
-                return <Component {...props} fullScreenPanelData={value}/>;
+            {value => {
+                return <Component {...props} fullScreenPanelData={value} />;
             }
             }
         </FullScreenPanelContext.Consumer>
     );
 }
 
-export {FullScreenPanelProvider, FullScreenPanelContext, withFullScreenPanelContext};
+export { FullScreenPanelProvider, FullScreenPanelContext, withFullScreenPanelContext };

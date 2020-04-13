@@ -1,6 +1,6 @@
+// modules
 import React from 'react';
 import PropTypes from 'prop-types';
-
 
 
 const FullscreenPanelFrame = (props) => {
@@ -20,7 +20,4 @@ FullscreenPanelFrame.propTypes = {
     children: PropTypes.node.isRequired,
 };
 
-FullscreenPanelFrame.defaultProps = {
-}
-
-export { FullscreenPanelFrame };
+export default FullscreenPanelFrame;

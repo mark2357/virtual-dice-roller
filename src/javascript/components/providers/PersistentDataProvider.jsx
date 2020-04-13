@@ -1,3 +1,4 @@
+// modules
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
@@ -134,6 +135,7 @@ PersistentDataProvider.propTypes = {
 
 
 const withPersistentDataContext = (Component) => {
+    // eslint-disable-next-line react/display-name
     return props => (
         <PersistentDataContext.Consumer>
             { value => {

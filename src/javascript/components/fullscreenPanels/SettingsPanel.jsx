@@ -1,17 +1,22 @@
+// modules
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { Button } from '../generics/Button';
+// components
+import Button from '../generics/Button';
+import FullscreenPanelFrame from './FullscreenPanelFrame';
+import PanelHeader from '../generics/PanelHeader';
+import PanelFooter from '../generics/PanelFooter';
 
-import { PersistentDataProps } from '../../propTypes/PersistentDataProps';
+// providers
 import { withPersistentDataContext } from '../providers/PersistentDataProvider';
-
 import { withFullScreenPanelContext } from '../providers/FullScreenPanelProvider';
+
+// proptypes
+import { PersistentDataProps } from '../../propTypes/PersistentDataProps';
 import { FullScreenPanelDataProps } from '../../propTypes/FullScreenPanelDataProps';
-import { FullscreenPanelFrame } from './FullscreenPanelFrame';
-import { PanelHeader } from '../generics/PanelHeader';
-import { PanelFooter } from '../generics/PanelFooter';
+
 
 class SettingsPanel extends Component {
 
@@ -27,8 +32,10 @@ class SettingsPanel extends Component {
         };
 
         // saves the initial settings incase cancel is pressed and they need to be reverted
+        // uses json parse to make full copy of object
         this.initialSettings = JSON.parse(JSON.stringify(settings));
 
+        //interval used to update fps text
         this.updateFPSInterval = null;
     }
 
@@ -65,7 +72,10 @@ class SettingsPanel extends Component {
         persistentData.setSettings(this.initialSettings);
     }
 
-
+    /**
+     * @description
+     * updates the fps value from engine and stores value in state
+     */
     updateFPS = () => {
         const { engine } = this.props;
         if(engine !== null)

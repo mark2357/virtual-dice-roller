@@ -1,20 +1,25 @@
+// modules
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import calculateCustomDiceRollResult from '../../helpers/calculateCustomDiceRollResult';
+// components
+import ValueCounter from '../generics/ValueCounter';
+import Button from '../generics/Button';
+import FullscreenPanelFrame from './FullscreenPanelFrame';
+import PanelHeader from '../generics/PanelHeader';
+import PanelFooter from '../generics/PanelFooter';
 
-import { ValueCounter } from '../generics/ValueCounter';
-import { Button } from '../generics/Button';
-import { CustomRollDataProps, CustomRollDataDefaultProps } from '../../propTypes/CustomRollDataProps';
+// proptypes
+import { FullScreenPanelDataProps } from '../../propTypes/FullScreenPanelDataProps';
+import { PersistentDataProps } from '../../propTypes/PersistentDataProps';
 
-
+// providers
 import { withFullScreenPanelContext } from '../providers/FullScreenPanelProvider';
 import { withPersistentDataContext } from '../providers/PersistentDataProvider';
 
-import { FullScreenPanelDataProps } from '../../propTypes/FullScreenPanelDataProps';
-import { FullscreenPanelFrame } from './FullscreenPanelFrame';
-import { PersistentDataProps } from '../../propTypes/PersistentDataProps';
+//helpers
+import calculateCustomDiceRollResult from '../../helpers/calculateCustomDiceRollResult';
 
 
 class CreateCustomRollPanel extends Component {
@@ -31,11 +36,12 @@ class CreateCustomRollPanel extends Component {
         let customRollData = [];
 
         let bonusCount = 0;
+        // if not creating new roll determines bonus count from custom roll data
         if (createNew === false) {
 
             const { customRollsData } = persistentData;
             customRollData = customRollsData[index];
-    
+
             const {
                 customResultCalculation,
             } = customRollData;
@@ -148,8 +154,7 @@ class CreateCustomRollPanel extends Component {
     /**
      * @description
      * updates the state with the new name
-     * @param {React.SyntheticEvent} e
-     * 
+     * @param {React.SyntheticEvent} e event from input element
      */
     handleNameChange = (e) => {
         this.setState({ customRollName: e.target.value });
@@ -164,7 +169,7 @@ class CreateCustomRollPanel extends Component {
         const { fullScreenPanelData, persistentData, index } = this.props;
         const { customRollsData } = persistentData;
         const saveData = this.getSaveData();
-        
+
 
         //TODO: fix this as it is technically mutating the state
         // null is used to represent new custom roll
@@ -207,10 +212,13 @@ class CreateCustomRollPanel extends Component {
         return (
             <FullscreenPanelFrame>
                 <div className='create-custom-roll-panel'>
-                    <div className='header'>
+                    <PanelHeader
+                        title={createNew ? 'Create New Custom Roll' : 'Edit Custom Roll'}
+                    />
+                    {/* <div className='header'>
                         <h2 className='title'>{createNew ? 'Create New Custom Roll' : 'Edit Custom Roll'}</h2>
                     </div>
-                    <hr />
+                    <hr /> */}
                     <div className='content-container'>
                         <div className='name-wrapper'>
                             <span>Custom Roll Name: </span>
@@ -256,8 +264,7 @@ class CreateCustomRollPanel extends Component {
                             </Button>
                         )}
                     </div>
-                    <hr />
-                    <div className='footer'>
+                    <PanelFooter>
                         <Button className='button-long' onClick={this.handleSaveClick}>
                             <div className='icon-wrapper'>
                                 <span>Save</span>
@@ -270,7 +277,7 @@ class CreateCustomRollPanel extends Component {
                                 <FontAwesomeIcon icon='times' />
                             </div>
                         </Button>
-                    </div>
+                    </PanelFooter>
                 </div>
             </FullscreenPanelFrame>
         );
@@ -279,14 +286,10 @@ class CreateCustomRollPanel extends Component {
 
 CreateCustomRollPanel.propTypes = {
     createNew: PropTypes.bool.isRequired,
-    customRollData: PropTypes.shape(CustomRollDataProps).isRequired,
     index: PropTypes.number,
     fullScreenPanelData: PropTypes.shape(FullScreenPanelDataProps).isRequired,
-    persistentData: PropTypes.shape(PersistentDataProps).isRequired,    
+    persistentData: PropTypes.shape(PersistentDataProps).isRequired,
 };
 
-CreateCustomRollPanel.defaultProps = {
-    customRollData: CustomRollDataDefaultProps,
-}
 
-export default withPersistentDataContext(withFullScreenPanelContext(CreateCustomRollPanel));
+export default withPersistentDataContext(withFullScreenPanelContext(CreateCustomRollPanel)); 

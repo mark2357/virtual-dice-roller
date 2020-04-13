@@ -1,26 +1,25 @@
 
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 
 import { withFullScreenPanelContext } from './providers/FullScreenPanelProvider';
 
-import { PANEL_TYPES } from '../constants/PanelTypes';
+import PANEL_TYPES from '../constants/PanelTypes';
 import { FullScreenPanelDataProps } from '../propTypes/FullScreenPanelDataProps';
 
 import CreateCustomRollPanel from './fullscreenPanels/CreateCustomRollPanel';
 import SettingsPanel from './fullscreenPanels/SettingsPanel';
 
 
-class FullScreenPanelDisplay extends Component {
+const FullScreenPanelDisplay = (props) => {
 
-
+    const { fullScreenPanelData } = props;
     /**
      * @description
      * returns the panel that is meant to be displayed
      */
-    getPanel = () => {
-        const { fullScreenPanelData } = this.props;
+    const getPanel = () => {
         switch (fullScreenPanelData.currentPanel) {
             case PANEL_TYPES.CREATE_CUSTOM_ROLL_PANEL:
                 return (<CreateCustomRollPanel {...fullScreenPanelData.panelProps} />);
@@ -31,16 +30,12 @@ class FullScreenPanelDisplay extends Component {
         }
     }
 
-    /**
-     * @inheritdoc
-     */
-    render() {
-        return (
-            <>
-                {this.getPanel()}
-            </>
-        );
-    }
+    return (
+        <>
+            {getPanel()}
+        </>
+    );
+
 }
 
 FullScreenPanelDisplay.propTypes = {

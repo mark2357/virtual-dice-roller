@@ -1,9 +1,12 @@
+//modules
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button } from './Button';
+
+// components
+import Button from './Button';
 
 
-export const ValueCounter = (props) => {
+const ValueCounter = (props) => {
     const { className, children, onClick } = props;
 
     /**
@@ -47,3 +50,5 @@ ValueCounter.defaultProps = {
     className: '',
     children: PropTypes.null,
 }
+
+export default ValueCounter;

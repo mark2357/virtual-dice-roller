@@ -1,34 +1,36 @@
+// modules
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
 import * as BABYLON from '@babylonjs/core';
 import "@babylonjs/core/Debug/debugLayer";
 import "@babylonjs/inspector";
-
 import { AmmoJSPlugin } from '@babylonjs/core';
-import * as Ammo from '../../assets/ammo';
 
-import '../css/Page.scss';
-
+// proptypes
 import { PersistentDataProps } from '../propTypes/PersistentDataProps';
+import { FullScreenPanelDataProps } from '../propTypes/FullScreenPanelDataProps';
+
+// providers
 import { withPersistentDataContext } from './providers/PersistentDataProvider';
+import { withFullScreenPanelContext } from './providers/FullScreenPanelProvider';
 
-
+// components
 import DiceButtons from './DiceButtons';
 import Scene from './Scene';
 import DiceRollTotalCounter from '../DiceRollTotalCounter';
 import ResultPanel from './ResultPanel';
 import CustomDiceRolls from './CustomDiceRolls';
+import Button from './generics/Button';
 
+// helper
 import calcRandomVectorBetween from '../helpers/calcRandomVectorBetween';
 import calculateCustomDiceRollResult from '../helpers/calculateCustomDiceRollResult';
-import {Button} from './generics/Button';
 
-import { withFullScreenPanelContext } from './providers/FullScreenPanelProvider';
-import { FullScreenPanelDataProps } from '../propTypes/FullScreenPanelDataProps';
-import { PANEL_TYPES } from '../constants/PanelTypes';
+// static minified js file
+import * as Ammo from '../../../assets/ammo';
 
-
+// constants
+import PANEL_TYPES from '../constants/PanelTypes';
 
 class Page extends Component {
 
@@ -41,6 +43,7 @@ class Page extends Component {
             resultText: '',
         }
 
+        // stores the original  dice mesh and colliders mesh 
         this.dice = {
             mesh: {
                 D4: null,
@@ -60,7 +63,7 @@ class Page extends Component {
             }
         };
         this.customResultCalculation = null; //string value or null, should be null when standard dice calculation is used
-        this.diceInstanceArray = [];
+        this.diceInstanceArray = []; // array of mesh colliders
         this.scene = null;
         this.engine = null;
         this.shadowGenerator = null;
@@ -68,13 +71,12 @@ class Page extends Component {
         this.diceRollTotalCounter = new DiceRollTotalCounter(this.getDiceInstanceArray, this.displayRollResult);
     }
 
-
     componentDidUpdate(prevProps) {
         const { settings } = this.props.persistentData;
         const { settings: prevSettings } = prevProps.persistentData;
 
-        console.log('componentDidUpdate', settings.shadowsEnabled, prevSettings.shadowsEnabled);
-        // change in shadowsEnabled
+
+        // checks if the settings value for shadows has changed
         if (settings.shadowsEnabled !== prevSettings.shadowsEnabled) {
             if (settings.shadowsEnabled)
                 this.enableShadows();
@@ -82,8 +84,6 @@ class Page extends Component {
                 this.disableShadows();
         }
     }
-
-
 
     //#region initial load functions
     /**
@@ -138,7 +138,6 @@ class Page extends Component {
         });
     }
 
-
     /**
      * @description
      * creates and sets up the camera as one is not included in the scene
@@ -154,7 +153,6 @@ class Page extends Component {
         camera.upperRadiusLimit = 20;
         camera.minZ = 0.1;
         camera.maxZ = 100;
-
 
         // This targets the camera to scene origin
         camera.setTarget(BABYLON.Vector3.Zero());
@@ -182,9 +180,7 @@ class Page extends Component {
      */
     createSkybox = () => {
 
-
         // reflection texture
-
         let reflectionTexture = new BABYLON.CubeTexture("./assets/textures/skybox_sml/skybox", this.scene);
         reflectionTexture.coordinatesMode = BABYLON.Texture.CUBIC_MODE;
 
@@ -194,8 +190,6 @@ class Page extends Component {
                 material.reflectionTexture = reflectionTexture;
             }
         });
-
-
 
         // skybox
         let skyboxTexture = new BABYLON.CubeTexture("./assets/textures/skybox_sml/skybox", this.scene);
@@ -346,7 +340,7 @@ class Page extends Component {
     /**
      * @description
      * handles when the roll dice buttons are pressed
-     * @param {Array<number>} diceSidesArray
+     * @param {Array<number>} diceSidesArray an array of numbers representing the number of sides of the dice
      * @param {string | undefined} customResultCalculation custom way of calculating result 
      */
     handleDiceRollButtonOnClick = (diceSidesArray, customResultCalculation) => {
@@ -481,6 +475,10 @@ class Page extends Component {
         this.setState({ resultPanelVisible: false });
     }
 
+    /**
+     * @description
+     * handles when the settings button is clicked
+     */
     handleSettingButtonOnClick = () => {
         const { fullScreenPanelData } = this.props;
         fullScreenPanelData.showPanel(PANEL_TYPES.SETTINGS_PANEL, {engine: this.engine});
@@ -493,8 +491,6 @@ class Page extends Component {
             resultPanelVisible,
             resultText,
         } = this.state;
-
-        console.log(this.engine);
 
         return (
             <div className='page'>
@@ -533,14 +529,9 @@ class Page extends Component {
     }
 }
 
-
-
 Page.propTypes = {
     persistentData: PropTypes.shape(PersistentDataProps).isRequired,
     fullScreenPanelData: PropTypes.shape(FullScreenPanelDataProps).isRequired,
 };
-
-Page.defaultProps = {
-}
 
 export default withFullScreenPanelContext(withPersistentDataContext(Page));

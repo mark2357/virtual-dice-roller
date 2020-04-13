@@ -1,9 +1,9 @@
+// modules
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-export const Button = (props) => {
+const Button = (props) => {
     const { className, children, onClick, icon } = props;
 
     return (
@@ -29,3 +29,5 @@ Button.defaultProps = {
     onClick: null,
     icon: null,
 }
+
+export default Button;

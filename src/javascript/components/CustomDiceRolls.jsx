@@ -1,15 +1,21 @@
-
+//modules
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+// proptypes
+import { FullScreenPanelDataProps } from '../propTypes/FullScreenPanelDataProps';
+import { PersistentDataProps } from '../propTypes/PersistentDataProps';
 
-import { Button } from './generics/Button';
+// providers
 import { withFullScreenPanelContext } from './providers/FullScreenPanelProvider';
 import { withPersistentDataContext } from './providers/PersistentDataProvider';
 
-import { PANEL_TYPES } from '../constants/PanelTypes';
-import { FullScreenPanelDataProps } from '../propTypes/FullScreenPanelDataProps';
-import { PersistentDataProps } from '../propTypes/PersistentDataProps';
+//constants
+import PANEL_TYPES from '../constants/PanelTypes';
+
+// components
+import Button from './generics/Button';
+
 
 class CustomDiceRolls extends Component {
 
@@ -24,6 +30,15 @@ class CustomDiceRolls extends Component {
         this.hideableButtonRef = React.createRef();
     }
 
+    componentDidMount() {
+        this.onResizeWindow();
+        window.addEventListener('resize', this.onResizeWindow);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.onResizeWindow);
+    }
+
     /**
      * @description
      * handles when the browser window resizes
@@ -32,15 +47,6 @@ class CustomDiceRolls extends Component {
         if (this.hideableButtonRef.current !== null) {
             this.setState({ buttonsWidth: this.hideableButtonRef.current.scrollWidth });
         }
-    }
-
-    componentDidMount() {
-        this.onResizeWindow();
-        window.addEventListener('resize', this.onResizeWindow);
-    }
-
-    componentWillUnmount() {
-        window.removeEventListener('resize', this.onResizeWindow);
     }
 
     /**
@@ -56,7 +62,8 @@ class CustomDiceRolls extends Component {
     }
 
     /**
-     * @description handles the change in button visibility
+     * @description
+     * handles the change in button visibility
      */
     handleChangeVisibilityClick = () => {
         const { buttonsHidden } = this.state;
@@ -89,10 +96,10 @@ class CustomDiceRolls extends Component {
 
     /**
      * @description
-     * shows the p
+     * shows the create custom roll panel
      */
     handleShowCreateCustomRollPanel = (index) => {
-        const {persistentData, fullScreenPanelData } = this.props;
+        const { persistentData, fullScreenPanelData } = this.props;
         const { customRollsData } = persistentData;
 
         //creating new custom roll
@@ -112,10 +119,6 @@ class CustomDiceRolls extends Component {
         }
     }
 
-
-    /**
-     * @inheritdoc
-     */
     render() {
         const { buttonsHidden, editMode } = this.state;
         const { persistentData } = this.props;

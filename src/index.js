@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import './css/index.scss';
 
 // main app
-import PageContainer from './components/PageContainer.jsx';
+import PageContainer from './javascript/components/PageContainer.jsx';
 
 //load font awesome icons
 import { library } from '@fortawesome/fontawesome-svg-core';

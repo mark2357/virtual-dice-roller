@@ -1,10 +1,11 @@
-
+// modules
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { Button } from './generics/Button';
+// components
+import Button from './generics/Button';
 
-export default class DiceButtons extends Component {
+class DiceButtons extends Component {
 
     constructor(props) {
         super(props);
@@ -17,6 +18,15 @@ export default class DiceButtons extends Component {
         this.hideableButtonRef = React.createRef();
     }
 
+    componentDidMount() {
+        this.onResizeWindow();
+        window.addEventListener('resize', this.onResizeWindow);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.onResizeWindow);
+    }
+
     /**
      * @description
      * handles when the browser window resizes
@@ -25,15 +35,6 @@ export default class DiceButtons extends Component {
         if (this.hideableButtonRef.current !== null) {
             this.setState({ buttonsWidth: this.hideableButtonRef.current.scrollWidth });
         }
-    }
-
-    componentDidMount() {
-        this.onResizeWindow();
-        window.addEventListener('resize', this.onResizeWindow);
-    }
-
-    componentWillUnmount() {
-        window.removeEventListener('resize', this.onResizeWindow);
     }
 
     /**
@@ -50,7 +51,8 @@ export default class DiceButtons extends Component {
     }
 
     /**
-     * @description handles changes in the number of dice being rolled
+     * @description
+     * handles changes in the number of dice being rolled
      * @param {boolean} increase 
      */
     handleCustomNumberChangeClick = (increase) => {
@@ -74,7 +76,8 @@ export default class DiceButtons extends Component {
     }
 
     /**
-     * @description handles the change in button visibility
+     * @description
+     * handles the change in button visibility
      */
     handleChangeVisibilityClick = () => {
         const { buttonsHidden } = this.state;
@@ -127,3 +130,5 @@ export default class DiceButtons extends Component {
 DiceButtons.propTypes = {
     onClick: PropTypes.func.isRequired,
 };
+
+export default DiceButtons;

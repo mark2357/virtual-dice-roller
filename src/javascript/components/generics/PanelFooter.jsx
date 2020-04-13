@@ -1,8 +1,9 @@
+// modules
 import React from 'react';
 import PropTypes from 'prop-types';
 
 
-export const PanelFooter = (props) => {
+const PanelFooter = (props) => {
     const { className, children } = props;
 
     return (
@@ -24,3 +25,5 @@ PanelFooter.defaultProps = {
     className: '',
     children: null,
 }
+
+export default PanelFooter;

@@ -1,11 +1,15 @@
+// modules
 import React, { Component } from 'react';
 
+// components
 import Page from './Page.jsx';
-import { FullScreenPanelProvider } from './providers/FullScreenPanelProvider.jsx';
-import { PersistentDataProvider, PersistentDataContext } from './providers/PersistentDataProvider.jsx';
 import FullScreenPanelDisplay from './FullScreenPanelDisplay.jsx';
 
-export default class PageContainer extends Component {
+// providers
+import { FullScreenPanelProvider } from './providers/FullScreenPanelProvider.jsx';
+import { PersistentDataProvider, PersistentDataContext } from './providers/PersistentDataProvider.jsx';
+
+class PageContainer extends Component {
     render() {
         return (
             <div className='page-container'>
@@ -26,3 +30,5 @@ export default class PageContainer extends Component {
         );
     }
 }
+
+export default PageContainer;
