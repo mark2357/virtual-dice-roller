@@ -20,7 +20,7 @@ class PersistentDataProvider extends Component {
      */
     _saveSettings = () => {
         const {settings} = this.state;
-        localStorage.setItem('setting', JSON.stringify(settings));
+        localStorage.setItem('settings', JSON.stringify(settings));
     }
 
     /**
@@ -36,11 +36,12 @@ class PersistentDataProvider extends Component {
         }
 
         const defaultSettings = {
-            shadowsEnabled: false,
+            shadowsEnabled: true,
             fontSizeMulti: 1,
         };
-
+        
         const settings = {...defaultSettings, ...data};
+        console.log(jsonData);
         return settings;
     }
 

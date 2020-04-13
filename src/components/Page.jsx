@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import * as BABYLON from '@babylonjs/core';
-import * as GUI from '@babylonjs/gui';
 import "@babylonjs/core/Debug/debugLayer";
 import "@babylonjs/inspector";
 
@@ -8,6 +9,10 @@ import { AmmoJSPlugin } from '@babylonjs/core';
 import * as Ammo from '../../assets/ammo';
 
 import '../css/Page.scss';
+
+import { PersistentDataProps } from '../propTypes/PersistentDataProps';
+import { withPersistentDataContext } from './providers/PersistentDataProvider';
+
 
 import DiceButtons from './DiceButtons';
 import Scene from './Scene';
@@ -17,10 +22,15 @@ import CustomDiceRolls from './CustomDiceRolls';
 
 import calcRandomVectorBetween from '../helpers/calcRandomVectorBetween';
 import calculateCustomDiceRollResult from '../helpers/calculateCustomDiceRollResult';
-import SettingsButton from './SettingButton';
+import {Button} from './generics/Button';
+
+import { withFullScreenPanelContext } from './providers/FullScreenPanelProvider';
+import { FullScreenPanelDataProps } from '../propTypes/FullScreenPanelDataProps';
+import { PANEL_TYPES } from '../constants/PanelTypes';
 
 
-export default class Page extends Component {
+
+class Page extends Component {
 
     constructor(props) {
         super(props);
@@ -52,10 +62,28 @@ export default class Page extends Component {
         this.customResultCalculation = null; //string value or null, should be null when standard dice calculation is used
         this.diceInstanceArray = [];
         this.scene = null;
-        this.advancedTexture = null;
+        this.engine = null;
         this.shadowGenerator = null;
+        this.shadowLight = null; // the light that is used to cast shadows
         this.diceRollTotalCounter = new DiceRollTotalCounter(this.getDiceInstanceArray, this.displayRollResult);
     }
+
+
+    componentDidUpdate(prevProps) {
+        const { settings } = this.props.persistentData;
+        const { settings: prevSettings } = prevProps.persistentData;
+
+        console.log('componentDidUpdate', settings.shadowsEnabled, prevSettings.shadowsEnabled);
+        // change in shadowsEnabled
+        if (settings.shadowsEnabled !== prevSettings.shadowsEnabled) {
+            if (settings.shadowsEnabled)
+                this.enableShadows();
+            else
+                this.disableShadows();
+        }
+    }
+
+
 
     //#region initial load functions
     /**
@@ -66,9 +94,11 @@ export default class Page extends Component {
     handleSceneMount = async (e) => {
         const { canvas, engine } = e;
 
-        let scene = null;
+        this.engine = engine;
+        console.log(this.engine);
 
-        let pro = new Promise((resolve, reject) => {
+        let scene = null;
+        let sceneLoad = new Promise((resolve, reject) => {
             BABYLON.SceneLoader.Load("./assets/", "Scene.babylon", engine, function (newScene) {
                 scene = newScene
                 resolve();
@@ -78,14 +108,10 @@ export default class Page extends Component {
             });
         });
 
-        await pro;
+        // waits until scene has finished loading, uses promise as it's easier to debug when not inside a inline function
+        await sceneLoad;
 
         this.scene = scene;
-
-        // scene.clearColor = new BABYLON.Color3(0.5, 0.5, 0.5);
-        // scene.ambientColor = new BABYLON.Color3.White;
-
-
         //sets up physics
         let physicsEnginePlugin = new AmmoJSPlugin(true, Ammo);
         scene.enablePhysics(null, physicsEnginePlugin);
@@ -103,8 +129,6 @@ export default class Page extends Component {
         this.createLightsAndShadows();
 
         this.processMeshes();
-
-        // this.createGUI();
 
         // scene.debugLayer.show();
         engine.runRenderLoop(() => {
@@ -193,20 +217,24 @@ export default class Page extends Component {
 
     /**
      * @description
-     * changes shadow setting on shadow caster
+     * creates shadow caster and sets it's settings
      */
     createLightsAndShadows = () => {
 
-        let directionalLight = this.scene.lights[0];
-        if (directionalLight !== null && directionalLight !== undefined) {
+        this.shadowLight = this.scene.lights[0];
+        if (this.shadowLight !== null && this.shadowLight !== undefined) {
 
-            this.shadowGenerator = new BABYLON.ShadowGenerator(512, directionalLight);
+            this.shadowGenerator = new BABYLON.ShadowGenerator(512, this.shadowLight);
             this.shadowGenerator.bias = 0.02;
             this.shadowGenerator.usePoissonSampling = true;
             this.shadowGenerator.filteringQuality = BABYLON.ShadowGenerator.QUALITY_HIGH;
             // this.shadowGenerator.usePercentageCloserFiltering = true;
-            directionalLight.autoCalcShadowZBounds = true;
-            directionalLight.intensity = 2;
+            this.shadowLight.autoCalcShadowZBounds = true;
+            this.shadowLight.intensity = 2;
+        }
+        const { settings } = this.props.persistentData;
+        if (!settings.shadowsEnabled) {
+            this.disableShadows();
         }
     }
 
@@ -281,6 +309,22 @@ export default class Page extends Component {
 
     /**
      * @description
+     * creates shadow caster and adds objects that need to cast shadows to the list of shadow casters
+     */
+    enableShadows() {
+        if (this.shadowLight !== null) this.shadowLight.shadowEnabled = true;
+    }
+
+    /**
+     * @description
+     * destroys shadow caster
+     */
+    disableShadows() {
+        if (this.shadowLight !== null) this.shadowLight.shadowEnabled = false;
+    }
+
+    /**
+     * @description
      * adds the mesh to the list of shadow casters for the shadow generator
      * 
      * @param {BABYLON.Mesh} mesh 
@@ -289,16 +333,6 @@ export default class Page extends Component {
     addShadowCaster(mesh, includeDescendants) {
         if (this.shadowGenerator !== null)
             this.shadowGenerator.addShadowCaster(mesh, includeDescendants);
-    }
-
-
-    /**
-     * @description
-     * creates initial GUI Texture
-     */
-    createGUI = () => {
-        this.advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
-        this.advancedTexture.idealWidth = 600;
     }
 
     /**
@@ -413,34 +447,6 @@ export default class Page extends Component {
 
     /**
      * @description
-     * displays dice roll as GUI
-     * @param {BABYLON.Mesh} mesh
-     * @param {number} diceRoll
-     */
-    displayResult = (mesh, diceRoll) => {
-        let label = new GUI.TextBlock();
-        label.text = `${diceRoll}`;
-        this.advancedTexture.addControl(label);
-        label.linkWithMesh(mesh);
-        label.linkOffsetX = 0;
-        label.linkOffsetY = -20;
-        label.color = "White";
-
-        this.GUIList.push(label);
-
-        var line = new GUI.Line();
-        line.lineWidth = 2;
-        line.y2 = 5;
-        line.linkOffsetY = -5;
-        this.advancedTexture.addControl(line);
-        line.linkWithMesh(mesh);
-        line.connectedControl = label;
-
-        this.GUIList.push(line);
-    }
-
-    /**
-     * @description
      * displays the result of a dice roll
      * @param {Array<number>} diceRollArray
      */
@@ -475,6 +481,11 @@ export default class Page extends Component {
         this.setState({ resultPanelVisible: false });
     }
 
+    handleSettingButtonOnClick = () => {
+        const { fullScreenPanelData } = this.props;
+        fullScreenPanelData.showPanel(PANEL_TYPES.SETTINGS_PANEL, {engine: this.engine});
+    };
+
 
     render() {
 
@@ -482,6 +493,8 @@ export default class Page extends Component {
             resultPanelVisible,
             resultText,
         } = this.state;
+
+        console.log(this.engine);
 
         return (
             <div className='page'>
@@ -507,7 +520,11 @@ export default class Page extends Component {
                             hideResultPanel={this.hideResultPanel}
                         />
                         <div className='setting-button-wrapper'>
-                            <SettingsButton/>
+                            <Button
+                                className='settings-button no-shrink'
+                                icon='cog'
+                                onClick={this.handleSettingButtonOnClick}
+                            />
                         </div>
                     </div>
                 </div>
@@ -515,3 +532,15 @@ export default class Page extends Component {
         );
     }
 }
+
+
+
+Page.propTypes = {
+    persistentData: PropTypes.shape(PersistentDataProps).isRequired,
+    fullScreenPanelData: PropTypes.shape(FullScreenPanelDataProps).isRequired,
+};
+
+Page.defaultProps = {
+}
+
+export default withFullScreenPanelContext(withPersistentDataContext(Page));
