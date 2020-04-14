@@ -12,6 +12,13 @@
         align-items: center;
         flex-direction: column;
 
+        .performance-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
         .shadow-setting-wrapper {
             display: flex;
             justify-content: center;
@@ -60,10 +67,10 @@
                 background: white;
                 cursor: pointer;
             }
-            .ui-scale-span-left{
+            .ui-scale-span-left {
                 margin-right: 1em;
             }
-            .ui-scale-span-right{
+            .ui-scale-span-right {
                 margin-left: 1em;
             }
         }

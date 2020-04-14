@@ -55,8 +55,6 @@ export default class DiceRollTotalCounter {
                 if (mesh.physicsImpostor.physicsBody.getAngularVelocity().length() > 0.1 || mesh.physicsImpostor.physicsBody.getAngularVelocity().length() > 0.1) {
                     allDiceFinishedRolling = false;
                 }
-                // console.log(mesh.physicsImpostor.physicsBody);
-                // console.log(mesh.physicsImpostor.physicsBody.getAngularVelocity().length(), mesh.physicsImpostor.physicsBody.getLinearVelocity().length());
             });
 
             if (allDiceFinishedRolling === true) {
@@ -198,7 +196,6 @@ export default class DiceRollTotalCounter {
                         currentHighestValue = dotProduct;
                     }
                 }
-                // console.log(diceRoll);
                 resultArray.push(diceRoll);
             }
             else console.error('could not get dice sides from mesh with name: ${mesh}');

@@ -34,7 +34,11 @@ class FullScreenPanelProvider extends Component {
             case PANEL_TYPES.SETTINGS_PANEL:
                 this.setState({ fullScreenPanelType: panelType, panelProps });
                 break;
+            case PANEL_TYPES.SELECT_EDIT_CUSTOM_ROLL_PANEL:
+                this.setState({ fullScreenPanelType: panelType, panelProps });
+                break;
             default:
+                console.error(`${panelType} is not implemented yet`);
                 break;
         }
     }

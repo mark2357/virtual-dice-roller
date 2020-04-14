@@ -24,29 +24,8 @@ class CustomDiceRolls extends Component {
 
         this.state = {
             buttonsHidden: false,
-            editMode: false,
-            buttonsWidth: 0, // the buttons width in px
         }
         this.hideableButtonRef = React.createRef();
-    }
-
-    componentDidMount() {
-        this.onResizeWindow();
-        window.addEventListener('resize', this.onResizeWindow);
-    }
-
-    componentWillUnmount() {
-        window.removeEventListener('resize', this.onResizeWindow);
-    }
-
-    /**
-     * @description
-     * handles when the browser window resizes
-     */
-    onResizeWindow = () => {
-        if (this.hideableButtonRef.current !== null) {
-            this.setState({ buttonsWidth: this.hideableButtonRef.current.scrollWidth });
-        }
     }
 
     /**
@@ -76,22 +55,15 @@ class CustomDiceRolls extends Component {
      * @returns { {left: number} }
      */
     getOffset() {
-        const { buttonsHidden, buttonsWidth } = this.state;
-        if (buttonsHidden === false) {
+        const { buttonsHidden } = this.state;
+
+        if (buttonsHidden === true && this.hideableButtonRef.current !== null) {
+            const buttonsWidth = this.hideableButtonRef.current.scrollWidth;
+            return { marginRight: `calc(${-buttonsWidth}px - 1em)` };
+        } 
+        else {
             return {};
         }
-        else {
-            return { marginRight: `calc(${-buttonsWidth}px - 1em)` };
-        }
-    }
-
-    /**
-     * @description
-     * toggles edit mode
-     */
-    handleToggleEditMode = () => {
-        const { editMode } = this.state;
-        this.setState({ editMode: !editMode });
     }
 
     /**
@@ -103,7 +75,7 @@ class CustomDiceRolls extends Component {
         const { customRollsData } = persistentData;
 
         //creating new custom roll
-        if(index === -1) {
+        if (index === -1) {
             fullScreenPanelData.showPanel(PANEL_TYPES.CREATE_CUSTOM_ROLL_PANEL, {
                 createNew: true,
                 index: null,
@@ -120,27 +92,25 @@ class CustomDiceRolls extends Component {
     }
 
     render() {
-        const { buttonsHidden, editMode } = this.state;
-        const { persistentData } = this.props;
+        const { buttonsHidden } = this.state;
+        const { persistentData, fullScreenPanelData } = this.props;
         const { customRollsData } = persistentData;
+
 
         const customRollsButtons = [];
         customRollsData.forEach((customRollData, index) => {
-            customRollsButtons.push(
-                <div className='custom-roll-row' key={index}>
-                    <Button
-                        className={`${editMode ? '' : 'hidden'}`}
-                        onClick={() => {this.handleShowCreateCustomRollPanel(index); }}
-                        icon='edit'
-                    />
-                    <Button
-                        className='button-long'
-                        onClick={() => { this.handleRollDiceClick(customRollData.diceRollArray, customRollData.customResultCalculation); }}
-                    >
-                        <span>{customRollData.name}</span>
-                    </Button>
-                </div>
-            );
+            if (!customRollData.hidden) {
+                customRollsButtons.push(
+                    <div className='custom-roll-row' key={index}>
+                        <Button
+                            className='button-long'
+                            onClick={() => { this.handleRollDiceClick(customRollData.diceRollArray, customRollData.customResultCalculation); }}
+                        >
+                            <span>{customRollData.name}</span>
+                        </Button>
+                    </div>
+                );
+            }
         });
 
         return (
@@ -152,11 +122,7 @@ class CustomDiceRolls extends Component {
                 />
                 <div ref={this.hideableButtonRef} className='hideable-buttons-container' style={this.getOffset()}>
                     <div className='edit-buttons-row'>
-                        <Button
-                            icon='plus'
-                            onClick={() => {this.handleShowCreateCustomRollPanel(-1); }}
-                        />
-                        <Button className={editMode ? 'toggled-enabled' : 'toggled-disabled'} onClick={this.handleToggleEditMode} icon='edit' />
+                        <Button icon='edit' onClick={() => { fullScreenPanelData.showPanel(PANEL_TYPES.SELECT_EDIT_CUSTOM_ROLL_PANEL); }} />
                     </div>
                     <Button className='button-long' onClick={() => { this.handleRollDiceClick([20, 20], 'MAX(@D, @D)'); }}><span>Roll Advantage</span></Button>
                     <Button className='button-long' onClick={() => { this.handleRollDiceClick([20, 20], 'MIN(@D, @D)'); }}><span>Roll Disadvantage</span></Button>

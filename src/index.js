@@ -9,8 +9,36 @@ import PageContainer from './javascript/components/PageContainer.jsx';
 
 //load font awesome icons
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faChevronLeft, faChevronRight, faChevronUp, faChevronDown, faTimes, faPlus, faMinus, faEdit, faSave, faTrashAlt, faCog} from '@fortawesome/free-solid-svg-icons';
-library.add(faChevronLeft, faChevronRight, faChevronUp, faChevronDown, faTimes, faPlus, faMinus, faEdit, faSave, faTrashAlt, faCog);
+import {
+    faChevronLeft,
+    faChevronRight,
+    faChevronUp,
+    faChevronDown,
+    faTimes,
+    faPlus,
+    faMinus,
+    faEdit,
+    faSave,
+    faTrashAlt,
+    faCog,
+    faEye,
+    faEyeSlash
+} from '@fortawesome/free-solid-svg-icons';
+library.add(
+    faChevronLeft,
+    faChevronRight,
+    faChevronUp,
+    faChevronDown,
+    faTimes,
+    faPlus,
+    faMinus,
+    faEdit,
+    faSave,
+    faTrashAlt,
+    faCog,
+    faEye,
+    faEyeSlash
+);
 
 //setup service worker
 if ('serviceWorker' in navigator) {

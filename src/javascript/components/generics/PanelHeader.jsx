@@ -1,7 +1,6 @@
 // modules
 import React from 'react';
 import PropTypes from 'prop-types';
-import PanelFooter from './PanelFooter';
 
 
 const PanelHeader = (props) => {
@@ -30,4 +29,4 @@ PanelHeader.defaultProps = {
     title: '',
 }
 
-export default PanelFooter;
+export default PanelHeader;

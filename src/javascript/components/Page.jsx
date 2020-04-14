@@ -95,7 +95,6 @@ class Page extends Component {
         const { canvas, engine } = e;
 
         this.engine = engine;
-        console.log(this.engine);
 
         let scene = null;
         let sceneLoad = new Promise((resolve, reject) => {

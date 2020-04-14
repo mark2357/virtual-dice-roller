@@ -42,7 +42,6 @@ class PersistentDataProvider extends Component {
         };
         
         const settings = {...defaultSettings, ...data};
-        console.log(jsonData);
         return settings;
     }
 
@@ -101,8 +100,6 @@ class PersistentDataProvider extends Component {
      * @param {{ shadowsEnabled: boolean, fontSizeMulti: number}} customDiceRolls
      */
     setCustomDiceRolls = (customRollsData) => {
-        console.log(customRollsData);
-
         this.setState({customRollsData}, () => {
             this._saveCustomDiceRolls();
         });

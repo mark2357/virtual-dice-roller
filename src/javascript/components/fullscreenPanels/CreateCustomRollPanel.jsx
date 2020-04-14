@@ -215,10 +215,6 @@ class CreateCustomRollPanel extends Component {
                     <PanelHeader
                         title={createNew ? 'Create New Custom Roll' : 'Edit Custom Roll'}
                     />
-                    {/* <div className='header'>
-                        <h2 className='title'>{createNew ? 'Create New Custom Roll' : 'Edit Custom Roll'}</h2>
-                    </div>
-                    <hr /> */}
                     <div className='content-container'>
                         <div className='name-wrapper'>
                             <span>Custom Roll Name: </span>

@@ -133,6 +133,7 @@ class SettingsPanel extends Component {
                     <div className='content-container'>
                         <div className='performance-wrapper'>
                             <span>Performance Settings</span>
+                            <br />
                                 <span>{currentFps} fps</span>
                             <div className='shadow-setting-wrapper'>
                                 <span>Shadows: </span>

@@ -13,28 +13,8 @@ class DiceButtons extends Component {
         this.state = {
             customNumber: 1, // the custom number of dice to roll
             buttonsHidden: false,
-            buttonsWidth: 0, // the buttons width in px
         }
         this.hideableButtonRef = React.createRef();
-    }
-
-    componentDidMount() {
-        this.onResizeWindow();
-        window.addEventListener('resize', this.onResizeWindow);
-    }
-
-    componentWillUnmount() {
-        window.removeEventListener('resize', this.onResizeWindow);
-    }
-
-    /**
-     * @description
-     * handles when the browser window resizes
-     */
-    onResizeWindow = () => {
-        if (this.hideableButtonRef.current !== null) {
-            this.setState({ buttonsWidth: this.hideableButtonRef.current.scrollWidth });
-        }
     }
 
     /**
@@ -90,12 +70,13 @@ class DiceButtons extends Component {
      * @returns { {left: number} }
      */
     getOffset() {
-        const { buttonsHidden, buttonsWidth } = this.state;
-        if (buttonsHidden === false) {
-            return {};
+        const { buttonsHidden } = this.state;
+        if (buttonsHidden === true && this.hideableButtonRef.current !== null) {
+            const buttonsWidth = this.hideableButtonRef.current.scrollWidth;
+            return { left: `calc(${-buttonsWidth}px - 1em)` };
         }
         else {
-            return { left: `calc(${-buttonsWidth}px - 1em)` };
+            return {};
         }
     }
 
@@ -103,7 +84,6 @@ class DiceButtons extends Component {
      * @inheritdoc
      */
     render() {
-
         const { customNumber, buttonsHidden } = this.state;
         return (
             <div className='dice-buttons'>

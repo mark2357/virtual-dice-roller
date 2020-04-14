@@ -10,7 +10,7 @@ import { FullScreenPanelDataProps } from '../propTypes/FullScreenPanelDataProps'
 
 import CreateCustomRollPanel from './fullscreenPanels/CreateCustomRollPanel';
 import SettingsPanel from './fullscreenPanels/SettingsPanel';
-
+import SelectEditCustomRollPanel from './fullscreenPanels/SelectEditCustomRollPanel';
 
 const FullScreenPanelDisplay = (props) => {
 
@@ -25,6 +25,9 @@ const FullScreenPanelDisplay = (props) => {
                 return (<CreateCustomRollPanel {...fullScreenPanelData.panelProps} />);
             case PANEL_TYPES.SETTINGS_PANEL:
                 return (<SettingsPanel {...fullScreenPanelData.panelProps} />);
+                case PANEL_TYPES.SELECT_EDIT_CUSTOM_ROLL_PANEL:
+                    return (<SelectEditCustomRollPanel {...fullScreenPanelData.panelProps} />);
+                    
             default:
                 return null;
         }
