@@ -2,6 +2,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+// proptypes
+import { PersistentDataProps } from '../propTypes/PersistentDataProps';
+
+// providers
+import { withPersistentDataContext } from './providers/PersistentDataProvider';
+
 // components
 import Button from './generics/Button';
 
@@ -13,8 +19,40 @@ class DiceButtons extends Component {
         this.state = {
             customNumber: 1, // the custom number of dice to roll
             buttonsHidden: false,
+            buttonsWidth: 0, // button width in px
         }
         this.hideableButtonRef = React.createRef();
+    }
+
+    componentDidUpdate(prevProps) {
+        const { customRollsData, settings } = this.props.persistentData;
+        const { customRollsData: prevCustomRollsData, settings: prevSettings  } = prevProps.persistentData;
+
+
+        // checks if the custom dice rolls has changed or the ui scale has changed and if so recalculates the buttons width
+        if (customRollsData !== prevCustomRollsData || settings.fontSizeMulti != prevSettings.fontSizeMulti) {
+            this.updateButtonsWidth();
+        }
+    }
+
+
+    componentDidMount() {
+        this.updateButtonsWidth();
+        window.addEventListener('resize', this.updateButtonsWidth);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updateButtonsWidth);
+    }
+
+    /**
+     * @description
+     * handles when the browser window resizes
+     */
+    updateButtonsWidth = () => {
+        if (this.hideableButtonRef.current !== null) {
+            this.setState({ buttonsWidth: this.hideableButtonRef.current.scrollWidth });
+        }
     }
 
     /**
@@ -70,13 +108,12 @@ class DiceButtons extends Component {
      * @returns { {left: number} }
      */
     getOffset() {
-        const { buttonsHidden } = this.state;
-        if (buttonsHidden === true && this.hideableButtonRef.current !== null) {
-            const buttonsWidth = this.hideableButtonRef.current.scrollWidth;
-            return { left: `calc(${-buttonsWidth}px - 1em)` };
+        const { buttonsHidden, buttonsWidth } = this.state;
+        if (buttonsHidden === false) {
+            return {};
         }
         else {
-            return {};
+            return { left: `calc(${-buttonsWidth}px - 1em)` };
         }
     }
 
@@ -109,6 +146,7 @@ class DiceButtons extends Component {
 
 DiceButtons.propTypes = {
     onClick: PropTypes.func.isRequired,
+    persistentData: PropTypes.shape(PersistentDataProps).isRequired,
 };
 
-export default DiceButtons;
+export default withPersistentDataContext(DiceButtons);

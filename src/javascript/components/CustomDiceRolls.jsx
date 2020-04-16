@@ -24,8 +24,40 @@ class CustomDiceRolls extends Component {
 
         this.state = {
             buttonsHidden: false,
+            buttonsWidth: 0, // button width in px
         }
         this.hideableButtonRef = React.createRef();
+    }
+
+    componentDidUpdate(prevProps) {
+        const { customRollsData, settings } = this.props.persistentData;
+        const { customRollsData: prevCustomRollsData, settings: prevSettings  } = prevProps.persistentData;
+
+
+        // checks if the custom dice rolls has changed or the ui scale has changed and if so recalculates the buttons width
+        if (customRollsData !== prevCustomRollsData || settings.fontSizeMulti != prevSettings.fontSizeMulti) {
+            this.updateButtonsWidth();
+        }
+    }
+
+
+    componentDidMount() {
+        this.updateButtonsWidth();
+        window.addEventListener('resize', this.updateButtonsWidth);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updateButtonsWidth);
+    }
+
+    /**
+     * @description
+     * handles when the browser window resizes
+     */
+    updateButtonsWidth = () => {
+        if (this.hideableButtonRef.current !== null) {
+            this.setState({ buttonsWidth: this.hideableButtonRef.current.scrollWidth });
+        }
     }
 
     /**
@@ -55,14 +87,12 @@ class CustomDiceRolls extends Component {
      * @returns { {left: number} }
      */
     getOffset() {
-        const { buttonsHidden } = this.state;
-
-        if (buttonsHidden === true && this.hideableButtonRef.current !== null) {
-            const buttonsWidth = this.hideableButtonRef.current.scrollWidth;
-            return { marginRight: `calc(${-buttonsWidth}px - 1em)` };
-        } 
-        else {
+        const { buttonsHidden, buttonsWidth } = this.state;
+        if (buttonsHidden === false) {
             return {};
+        }
+        else {
+            return { marginRight: `calc(${-buttonsWidth}px - 1em)` };
         }
     }
 
