@@ -1,0 +1,33 @@
+.camera-reset-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .icon-reset {
+        background: #09C;
+        position: absolute;
+        margin-top: 0.14em;
+        font-size: 0.5em;
+        color: white;
+        transition: color 0.3s, background 0.3s;
+    }
+}
+
+//used to allow the icon to work correctly when used inside a button
+.button:hover {
+    .camera-reset-icon {
+        .icon-reset {
+            background: transparent;
+            color: #09C;
+        }
+    }
+}
+
+.button.disabled {
+    .camera-reset-icon {
+        .icon-reset {
+            color: #bfbfbf;
+            background: #007298;
+        }
+    }
+}

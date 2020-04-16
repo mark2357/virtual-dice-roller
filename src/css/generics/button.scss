@@ -2,8 +2,8 @@
     pointer-events: all;
     border-radius: 0.5em;
     background: white;
-    border: 0.2em solid #09C;
-    color:#09C;
+    border: 0.2em solid #09c;
+    color: #09c;
     width: 3.6em;
     height: 3.6em;
     margin: 0.2em;
@@ -12,11 +12,23 @@
     font-size: inherit;
 
     &:hover {
-        background: #09C;
+        background: #09c;
         color: white;
         span {
             color: white;
         }
+    }
+
+    &.disabled {
+        background: #bfbfbf;
+        border-color: #007298;
+        span {
+            color: #bfbfbf;
+        }
+        svg {
+            color: #007298;
+        }
+        
     }
 
     &.no-shrink {
@@ -30,26 +42,30 @@
     }
     &.toggled-enabled {
         border-color: green;
-        span, svg {
+        span,
+        svg {
             color: green;
         }
         &:hover {
             background: green;
             color: white;
-            span, svg {
+            span,
+            svg {
                 color: white;
             }
         }
     }
     &.toggled-disabled {
         border-color: red;
-        span, svg {
+        span,
+        svg {
             color: red;
         }
         &:hover {
             background: red;
             color: white;
-            span, svg {
+            span,
+            svg {
                 color: white;
             }
         }

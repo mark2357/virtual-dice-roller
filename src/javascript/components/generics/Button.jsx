@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const Button = (props) => {
-    const { className, children, onClick, icon } = props;
+    const { className, children, onClick, icon, disabled } = props;
 
     return (
-        <button className={`button ${className}` } onClick={onClick}>
+        <button className={`button ${className} ${disabled ? 'disabled' : ''}` } disabled={disabled} onClick={onClick}>
             {children}
             {icon !== null && (
                 <FontAwesomeIcon className='icon' icon={icon} />
@@ -21,6 +21,7 @@ Button.propTypes = {
     children: PropTypes.node,
     onClick: PropTypes.func,
     icon: PropTypes.string,
+    disabled: PropTypes.bool,
 };
 
 Button.defaultProps = {
@@ -28,6 +29,7 @@ Button.defaultProps = {
     children: null,
     onClick: null,
     icon: null,
+    disabled: false,
 }
 
 export default Button;

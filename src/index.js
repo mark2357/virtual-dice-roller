@@ -22,7 +22,9 @@ import {
     faTrashAlt,
     faCog,
     faEye,
-    faEyeSlash
+    faEyeSlash,
+    faCamera,
+    faSyncAlt
 } from '@fortawesome/free-solid-svg-icons';
 library.add(
     faChevronLeft,
@@ -37,7 +39,9 @@ library.add(
     faTrashAlt,
     faCog,
     faEye,
-    faEyeSlash
+    faEyeSlash,
+    faCamera,
+    faSyncAlt
 );
 
 //setup service worker

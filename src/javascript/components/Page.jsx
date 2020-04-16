@@ -21,6 +21,7 @@ import DiceRollTotalCounter from '../DiceRollTotalCounter';
 import ResultPanel from './ResultPanel';
 import CustomDiceRolls from './CustomDiceRolls';
 import Button from './generics/Button';
+import CameraResetIcon from './CameraResetIcon';
 
 // helper
 import calcRandomVectorBetween from '../helpers/calcRandomVectorBetween';
@@ -41,6 +42,7 @@ class Page extends Component {
             diceRollArray: [],
             resultPanelVisible: false,
             resultText: '',
+            cameraResetDisabled: true,
         }
 
         // stores the original  dice mesh and colliders mesh 
@@ -69,6 +71,7 @@ class Page extends Component {
         this.shadowGenerator = null;
         this.shadowLight = null; // the light that is used to cast shadows
         this.diceRollTotalCounter = new DiceRollTotalCounter(this.getDiceInstanceArray, this.displayRollResult);
+        this.camera = null;
     }
 
     componentDidUpdate(prevProps) {
@@ -84,6 +87,41 @@ class Page extends Component {
                 this.disableShadows();
         }
     }
+
+    /**
+     * @description
+     * stops camera animation if screen is pressed
+     */
+    handlePointerDown = () => {
+        if (this.camera !== null) {
+            this.scene.stopAnimation(this.camera);
+            this.camera.animations = [];
+        }
+    }
+
+    /**
+     * @description
+     * if mouse is down or touch has started on the canvas enable the camera reset button 
+     */
+    handlePointerMove = (e) => {
+        const { cameraResetDisabled } = this.state;
+        if (cameraResetDisabled && e.buttons > 0) {
+            this.setState({ cameraResetDisabled: false });
+        }
+    }
+
+    /**
+     * @description
+     * if scene is scrolled enable the camera reset button 
+     */
+    handleScroll = () => {
+        const { cameraResetDisabled } = this.state;
+        if (cameraResetDisabled) {
+            this.setState({ cameraResetDisabled: false });
+        }
+    }
+
+
 
     //#region initial load functions
     /**
@@ -129,6 +167,21 @@ class Page extends Component {
 
         this.processMeshes();
 
+        // adds pointer observable to determine when the camera can be reset
+        scene.onPointerObservable.add((pointerInfo) => {
+            switch (pointerInfo.type) {
+                case BABYLON.PointerEventTypes.POINTERDOWN:
+                    this.handlePointerDown();
+                    break;
+                case BABYLON.PointerEventTypes.POINTERMOVE:
+                    this.handlePointerMove(pointerInfo.event);
+                    break;
+                case BABYLON.PointerEventTypes.POINTERWHEEL:
+                    this.handleScroll();
+                    break;
+            }
+        });
+
         // scene.debugLayer.show();
         engine.runRenderLoop(() => {
             if (scene) {
@@ -158,7 +211,7 @@ class Page extends Component {
 
         // This attaches the camera to the canvas
         camera.attachControl(canvas, true);
-
+        this.camera = camera;
     }
 
     /**
@@ -480,8 +533,128 @@ class Page extends Component {
      */
     handleSettingButtonOnClick = () => {
         const { fullScreenPanelData } = this.props;
-        fullScreenPanelData.showPanel(PANEL_TYPES.SETTINGS_PANEL, {engine: this.engine});
+        fullScreenPanelData.showPanel(PANEL_TYPES.SETTINGS_PANEL, { engine: this.engine });
     };
+
+    /**
+     * @description
+     * returns true when the cam
+     */
+    resetCameraButtonDisabled = () => {
+    }
+
+    /**
+     * @description
+     * resets the cameras position and rotation to it's original position
+     */
+    handleResetCamera = () => {
+
+        const animationDurationFrames = 30;
+        const alphaTarget = 0;
+        const betaTarget = 0.6;
+        const radiusTarget = 8;
+        const posTarget = new BABYLON.Vector3(0, 0, 0);
+
+
+        const camera = this.camera;
+
+        if (camera === null) return;
+        if (camera.alpha === alphaTarget &&
+            camera.beta === betaTarget &&
+            camera.radius === radiusTarget &&
+            camera.target === posTarget) return;
+
+        // creates camera animation
+
+        //clears current animations
+        this.scene.stopAnimation(camera);
+        camera.animations = [];
+
+        // creates easing function to be used with animations
+        var easingFunction = new BABYLON.QuadraticEase();
+        easingFunction.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
+
+
+
+        //creates 4 animations one for each float value alpha, beta and radius and one for the Vector3 target
+
+        let animationAlpha = new BABYLON.Animation(
+            "alphaAnimation",
+            "alpha",
+            30,
+            BABYLON.Animation.ANIMATIONTYPE_FLOAT);
+        let keysAlpha = [];
+        keysAlpha.push({
+            frame: 0,
+            value: camera.alpha,
+        });
+        keysAlpha.push({
+            frame: animationDurationFrames,
+            value: 0
+        });
+        animationAlpha.setKeys(keysAlpha);
+        animationAlpha.setEasingFunction(easingFunction);
+
+        let animationBeta = new BABYLON.Animation(
+            "betaAnimation",
+            "beta",
+            30,
+            BABYLON.Animation.ANIMATIONTYPE_FLOAT);
+        let keysBeta = [];
+        keysBeta.push({
+            frame: 0,
+            value: camera.beta,
+        });
+        keysBeta.push({
+            frame: animationDurationFrames,
+            value: 0.6,
+        });
+        animationBeta.setKeys(keysBeta);
+        animationBeta.setEasingFunction(easingFunction);
+
+        let animationRadius = new BABYLON.Animation(
+            "radiusAnimation",
+            "radius",
+            30,
+            BABYLON.Animation.ANIMATIONTYPE_FLOAT);
+        let keysRadius = [];
+        keysRadius.push({
+            frame: 0,
+            value: camera.radius,
+        });
+        keysRadius.push({
+            frame: animationDurationFrames,
+            value: 8
+        });
+        animationRadius.setKeys(keysRadius);
+        animationRadius.setEasingFunction(easingFunction);
+
+        let animationTarget = new BABYLON.Animation(
+            "targetAnimation",
+            "target",
+            30,
+            BABYLON.Animation.ANIMATIONTYPE_VECTOR3);
+        let keysTarget = [];
+        keysTarget.push({
+            frame: 0,
+            value: camera.target,
+        });
+        keysTarget.push({
+            frame: animationDurationFrames,
+            value: new BABYLON.Vector3(0, 0, 0),
+        });
+        animationTarget.setKeys(keysTarget);
+        animationTarget.setEasingFunction(easingFunction);
+
+
+        camera.animations.push(animationTarget);
+        camera.animations.push(animationAlpha);
+        camera.animations.push(animationBeta);
+        camera.animations.push(animationRadius);
+        this.scene.beginAnimation(camera, 0, 30, false);
+        this.setState({ cameraResetDisabled: true });
+    }
+
 
 
     render() {
@@ -489,6 +662,7 @@ class Page extends Component {
         const {
             resultPanelVisible,
             resultText,
+            cameraResetDisabled,
         } = this.state;
 
         return (
@@ -509,6 +683,15 @@ class Page extends Component {
                     </div>
 
                     <div className='bottom-row-container'>
+                        <div className='reset-camera-button-wrapper'>
+                            <Button
+                                className='reset-camera-button no-shrink'
+                                onClick={this.handleResetCamera}
+                                disabled={cameraResetDisabled}
+                            >
+                                <CameraResetIcon className='camera-reset' />
+                            </Button>
+                        </div>
                         <ResultPanel
                             resultText={resultText}
                             resultPanelVisible={resultPanelVisible}
