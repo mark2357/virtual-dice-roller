@@ -102,6 +102,7 @@ class CreateCustomRollPanel extends Component {
                 ...Array(d4Count).fill(4),
             ],
             customResultCalculation: customResultCalculation,
+            hidden: false,
         };
         return saveData;
     }
@@ -286,6 +287,10 @@ CreateCustomRollPanel.propTypes = {
     fullScreenPanelData: PropTypes.shape(FullScreenPanelDataProps).isRequired,
     persistentData: PropTypes.shape(PersistentDataProps).isRequired,
 };
+
+CreateCustomRollPanel.defaultProps = {
+    index: null,
+}
 
 
 export default withPersistentDataContext(withFullScreenPanelContext(CreateCustomRollPanel)); 

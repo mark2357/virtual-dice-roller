@@ -19,7 +19,8 @@
             align-items: flex-start;
             justify-content: flex-start;
             writing-mode: vertical-lr;
-            width: fit-content;
+            // width: fit-content;
+            width: min-content;
             transition: left 0.5s ease;
             flex-wrap: wrap;
             left: 0;
