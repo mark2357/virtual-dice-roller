@@ -2,6 +2,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as BABYLON from '@babylonjs/core';
+import 'pepjs';
 
 class Scene extends React.Component {
 
