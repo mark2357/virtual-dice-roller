@@ -13,7 +13,6 @@ const ValueCounter = (props) => {
      * @description
      * handles when the up or down value buttons are pressed
      * @param {number} deltaValue -1 for decrement and 1 for increment
-     * 
      */
     const handleValueChange = (deltaValue) => {
         if (typeof onClick === 'function') {

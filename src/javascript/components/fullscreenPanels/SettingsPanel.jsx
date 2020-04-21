@@ -1,5 +1,5 @@
 // modules
-import React, { Component } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -10,52 +10,70 @@ import PanelHeader from '../generics/PanelHeader';
 import PanelFooter from '../generics/PanelFooter';
 
 // providers
-import { withPersistentDataContext } from '../providers/PersistentDataProvider';
-import { withFullScreenPanelContext } from '../providers/FullScreenPanelProvider';
+import { PersistentDataContext } from '../providers/PersistentDataProvider';
+import { FullScreenPanelContext } from '../providers/FullScreenPanelProvider';
 
-// proptypes
-import { PersistentDataProps } from '../../propTypes/PersistentDataProps';
-import { FullScreenPanelDataProps } from '../../propTypes/FullScreenPanelDataProps';
+const SettingsPanel = (props) => {
 
 
-class SettingsPanel extends Component {
+    /**
+     * @type {FullScreenPanelData}
+     */
+    const fullScreenPanelData = useContext(FullScreenPanelContext);
 
-    constructor(props) {
-        super(props);
+    /**
+     * @type {PersistentData}
+     */
+    const persistentData = useContext(PersistentDataContext);
 
-        const { settings } = this.props.persistentData;
 
-        this.state = {
-            fontSizeMulti: Number.parseFloat(settings.fontSizeMulti),
-            shadowsEnabled: settings.shadowsEnabled,
-            currentFps: 0,
+
+    const initialSettings = useRef();
+
+
+    const [fontSizeMulti, setFontSizeMulti] = useState(Number.parseFloat(persistentData.settings.fontSizeMulti));
+    const [shadowsEnabled, setShadowsEnabled] = useState(persistentData.settings.shadowsEnabled);
+    const [currentFps, setCurrentFps] = useState(0);
+
+    //#region useEffect 
+
+    /**
+     * @description
+     * sets up initial setting on first render and sets interval
+     * removes interval before component unload
+     */
+    useEffect(() => {
+
+        initialSettings.current = {
+            fontSizeMulti: Number.parseFloat(persistentData.settings.fontSizeMulti),
+            shadowsEnabled: persistentData.settings.shadowsEnabled,
         };
 
-        // saves the initial settings incase cancel is pressed and they need to be reverted
-        // uses json parse to make full copy of object
-        this.initialSettings = JSON.parse(JSON.stringify(settings));
+        updateFPS();
+        const updateFPSInterval = setInterval(updateFPS, 500);
 
-        //interval used to update fps text
-        this.updateFPSInterval = null;
-    }
+        return () => {
+            clearInterval(updateFPSInterval);
+        };
+    }, []);
+
+    /**
+     * @description
+     * saves settings on state change
+     */
+    useEffect(() => {
+        saveSettings();
+    }, [fontSizeMulti, shadowsEnabled, currentFps]);
 
 
-    componentDidMount() {
-        this.updateFPS();
-        this.updateFPSInterval = setInterval(this.updateFPS, 500);
-    }
 
-    componentWillUnmount() {
-        clearInterval(this.updateFPSInterval);
-    }
+    //#endregion
 
     /**
      * @description
      * saves the current settings to local storage
      */
-    saveSettings = () => {
-        const { persistentData } = this.props;
-        const { fontSizeMulti, shadowsEnabled } = this.state
+    const saveSettings = () => {
         const settings = {
             fontSizeMulti,
             shadowsEnabled,
@@ -67,29 +85,30 @@ class SettingsPanel extends Component {
      * @description
      * reverts the settings to there state before the panel was opened
      */
-    revertSettings = () => {
-        const { persistentData } = this.props;
-        persistentData.setSettings(this.initialSettings);
+    const revertSettings = () => {
+        persistentData.setSettings(initialSettings.current);
     }
 
     /**
      * @description
      * updates the fps value from engine and stores value in state
      */
-    updateFPS = () => {
-        const { engine } = this.props;
-        if(engine !== null)
-            this.setState({currentFps: engine.getFps().toFixed()});
+    const updateFPS = () => {
+        const { engine } = props;
+        if (engine !== null)
+            setCurrentFps(engine.getFps().toFixed());
     }
+
+    //#region handler functions
 
     /**
      * @description
      * handles switching the shadows on and off
      * @param {React.SyntheticEvent} e
      */
-    handleShadowsEnabledChanged = (e) => {
+    const handleShadowsEnabledChanged = (e) => {
         const value = e.currentTarget.value === 'true';
-        this.setState({ shadowsEnabled: value }, this.saveSettings);
+        setShadowsEnabled(value);
     }
 
     /**
@@ -97,18 +116,17 @@ class SettingsPanel extends Component {
      * handles changing the UI scale
      * @param {React.SyntheticEvent} e
      */
-    handleUISizeChange = (e) => {
-        const fontSizeMulti = Number.parseFloat(e.currentTarget.value);
-        this.setState({ fontSizeMulti: fontSizeMulti }, this.saveSettings);
+    const handleUISizeChange = (e) => {
+        const newFontSizeMulti = Number.parseFloat(e.currentTarget.value);
+        setFontSizeMulti(newFontSizeMulti);
     }
 
     /**
      * @description
      * handles when save button is clicked
      */
-    handleSaveClick = () => {
-        const { fullScreenPanelData } = this.props;
-        this.saveSettings();
+    const handleSaveClick = () => {
+        saveSettings();
         fullScreenPanelData.closePanel();
     }
 
@@ -116,90 +134,84 @@ class SettingsPanel extends Component {
      * @description
      * handles when cancel button is clicked
      */
-    handleCancelClick = () => {
-        const { fullScreenPanelData } = this.props;
-        this.revertSettings();
+    const handleCancelClick = () => {
+        revertSettings();
         fullScreenPanelData.closePanel();
     }
-
-
-    render() {
-        const { fontSizeMulti, shadowsEnabled, currentFps } = this.state;
-
-        return (
-            <FullscreenPanelFrame>
-                <div className='settings-panel'>
-                    <PanelHeader title='Settings' />
-                    <div className='content-container'>
-                        <div className='performance-wrapper'>
-                            <span>Performance Settings</span>
-                            <br />
-                                <span>{currentFps} fps</span>
-                            <div className='shadow-setting-wrapper'>
-                                <span>Shadows: </span>
-                                <span>On</span>
-                                <input className='radio-input'
-                                    type='radio'
-                                    name='shadows'
-                                    value={true}
-                                    checked={shadowsEnabled}
-                                    onChange={this.handleShadowsEnabledChanged}
-                                />
-                                <span>Off</span>
-                                <input
-                                    className='radio-input'
-                                    type='radio'
-                                    name='shadows'
-                                    value={false}
-                                    checked={!shadowsEnabled}
-                                    onChange={this.handleShadowsEnabledChanged}
-                                />
-                            </div>
-                        </div>
-                        <div className='ui-scale-wrapper'>
-                            <span className='ui-scale-span-left'>UI Scale: </span>
-                            <input
-                                className='slider-input'
-                                type='range'
-                                min='0.5'
-                                max='1.5'
-                                step='0.01'
-                                value={fontSizeMulti}
-                                onChange={this.handleUISizeChange}
+    
+    //#endregion
+    
+    return (
+        <FullscreenPanelFrame>
+            <div className='settings-panel'>
+                <PanelHeader title='Settings' />
+                <div className='content-container'>
+                    <div className='performance-wrapper'>
+                        <span>Performance Settings</span>
+                        <br />
+                        <span>{currentFps} fps</span>
+                        <div className='shadow-setting-wrapper'>
+                            <span>Shadows: </span>
+                            <span>On</span>
+                            <input className='radio-input'
+                                type='radio'
+                                name='shadows'
+                                value={true}
+                                checked={shadowsEnabled}
+                                onChange={handleShadowsEnabledChanged}
                             />
-                            <span className='ui-scale-span-right'>{fontSizeMulti.toFixed(2)}</span>
+                            <span>Off</span>
+                            <input
+                                className='radio-input'
+                                type='radio'
+                                name='shadows'
+                                value={false}
+                                checked={!shadowsEnabled}
+                                onChange={handleShadowsEnabledChanged}
+                            />
                         </div>
-
-                        <span> Created by: Mark Lenton</span>
                     </div>
-                    <PanelFooter>
-                        <Button className='button-long' onClick={this.handleSaveClick}>
-                            <div className='icon-wrapper'>
-                                <span>Save</span>
-                                <FontAwesomeIcon icon='save' />
-                            </div>
-                        </Button>
-                        <Button className='button-long' onClick={this.handleCancelClick}>
-                            <div className='icon-wrapper'>
-                                <span>Cancel</span>
-                                <FontAwesomeIcon icon='times' />
-                            </div>
-                        </Button>
-                    </PanelFooter>
+                    <div className='ui-scale-wrapper'>
+                        <span className='ui-scale-span-left'>UI Scale: </span>
+                        <input
+                            className='slider-input'
+                            type='range'
+                            min='0.5'
+                            max='1.5'
+                            step='0.01'
+                            value={fontSizeMulti}
+                            onChange={handleUISizeChange}
+                        />
+                        <span className='ui-scale-span-right'>{fontSizeMulti.toFixed(2)}</span>
+                    </div>
+
+                    <span> Created by: Mark Lenton</span>
                 </div>
-            </FullscreenPanelFrame >
-        );
-    }
+                <PanelFooter>
+                    <Button className='button-long' onClick={handleSaveClick}>
+                        <div className='icon-wrapper'>
+                            <span>Save</span>
+                            <FontAwesomeIcon icon='save' />
+                        </div>
+                    </Button>
+                    <Button className='button-long' onClick={handleCancelClick}>
+                        <div className='icon-wrapper'>
+                            <span>Cancel</span>
+                            <FontAwesomeIcon icon='times' />
+                        </div>
+                    </Button>
+                </PanelFooter>
+            </div>
+        </FullscreenPanelFrame >
+    );
 }
 
 SettingsPanel.propTypes = {
     engine: PropTypes.object,
-    fullScreenPanelData: PropTypes.shape(FullScreenPanelDataProps).isRequired,
-    persistentData: PropTypes.shape(PersistentDataProps).isRequired,
 };
 
 SettingsPanel.defaultProps = {
     engine: null,
 }
 
-export default withPersistentDataContext(withFullScreenPanelContext(SettingsPanel));
+export default SettingsPanel;

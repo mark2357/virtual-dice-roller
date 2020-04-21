@@ -1,20 +1,26 @@
+// modules
+import React, { useContext } from 'react';
 
-import React from 'react';
-import PropTypes from 'prop-types';
+// providers
+import { FullScreenPanelContext } from './providers/FullScreenPanelProvider';
 
-
-import { withFullScreenPanelContext } from './providers/FullScreenPanelProvider';
-
+// constants
 import PANEL_TYPES from '../constants/PanelTypes';
-import { FullScreenPanelDataProps } from '../propTypes/FullScreenPanelDataProps';
 
+//components
 import CreateCustomRollPanel from './fullscreenPanels/CreateCustomRollPanel';
 import SettingsPanel from './fullscreenPanels/SettingsPanel';
 import SelectEditCustomRollPanel from './fullscreenPanels/SelectEditCustomRollPanel';
 
-const FullScreenPanelDisplay = (props) => {
 
-    const { fullScreenPanelData } = props;
+const FullScreenPanelDisplay = () => {
+
+    /**
+     * @type {FullScreenPanelData}
+     */
+    const fullScreenPanelData = useContext(FullScreenPanelContext);
+
+    
     /**
      * @description
      * returns the panel that is meant to be displayed
@@ -27,7 +33,7 @@ const FullScreenPanelDisplay = (props) => {
                 return (<SettingsPanel {...fullScreenPanelData.panelProps} />);
                 case PANEL_TYPES.SELECT_EDIT_CUSTOM_ROLL_PANEL:
                     return (<SelectEditCustomRollPanel {...fullScreenPanelData.panelProps} />);
-                    
+
             default:
                 return null;
         }
@@ -41,9 +47,4 @@ const FullScreenPanelDisplay = (props) => {
 
 }
 
-FullScreenPanelDisplay.propTypes = {
-    fullScreenPanelData: PropTypes.shape(FullScreenPanelDataProps).isRequired,
-};
-
-
-export default withFullScreenPanelContext(FullScreenPanelDisplay);
+export default FullScreenPanelDisplay;
