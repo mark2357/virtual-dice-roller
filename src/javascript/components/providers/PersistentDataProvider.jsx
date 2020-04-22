@@ -42,6 +42,11 @@ class PersistentDataProvider extends Component {
         };
         
         const settings = {...defaultSettings, ...data};
+
+        // checks to make sure data is the correct type
+        if(typeof settings.shadowsEnabled !== 'boolean') settings.shadowsEnabled = defaultSettings.shadowsEnabled;
+        if(typeof settings.fontSizeMulti !== 'number') settings.fontSizeMulti = defaultSettings.fontSizeMulti;
+
         return settings;
     }
 
@@ -75,6 +80,14 @@ class PersistentDataProvider extends Component {
             for(let i = 0; i < data.length; i++) {
                 let customDiceRoll = data[i];
                 customDiceRoll = {...defaultCustomDiceRoll, ...customDiceRoll}
+
+                // checks to make sure data is the correct type
+                if(typeof customDiceRoll.name !== 'string') customDiceRoll.name = defaultCustomDiceRoll.name;
+                if(Array.isArray(customDiceRoll.diceRollArray) === false || customDiceRoll.diceRollArray.every((num) => typeof num === 'number' )) customDiceRoll.diceRollArray = defaultCustomDiceRoll.diceRollArray;
+                if(typeof customDiceRoll.customResultCalculation !== 'string') customDiceRoll.customResultCalculation = defaultCustomDiceRoll.customResultCalculation;
+                if(typeof customDiceRoll.hidden !== 'boolean') customDiceRoll.hidden = defaultCustomDiceRoll.hidden;
+
+
                 data[i] = customDiceRoll;
             }
             return data;
