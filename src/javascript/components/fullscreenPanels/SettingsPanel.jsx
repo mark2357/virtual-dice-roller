@@ -28,7 +28,10 @@ const SettingsPanel = (props) => {
 
 
 
-    const initialSettings = useRef();
+    const initialSettings = useRef({
+        fontSizeMulti: Number.parseFloat(persistentData.settings.fontSizeMulti),
+        shadowsEnabled: persistentData.settings.shadowsEnabled,
+    } );
 
 
     const [fontSizeMulti, setFontSizeMulti] = useState(Number.parseFloat(persistentData.settings.fontSizeMulti));
@@ -43,12 +46,6 @@ const SettingsPanel = (props) => {
      * removes interval before component unload
      */
     useEffect(() => {
-
-        initialSettings.current = {
-            fontSizeMulti: Number.parseFloat(persistentData.settings.fontSizeMulti),
-            shadowsEnabled: persistentData.settings.shadowsEnabled,
-        };
-
         updateFPS();
         const updateFPSInterval = setInterval(updateFPS, 500);
 

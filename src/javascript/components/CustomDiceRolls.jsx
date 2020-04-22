@@ -1,14 +1,11 @@
 //modules
-import React, { Component } from 'react';
+import React, { useRef, useState, useContext, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 
-// proptypes
-import { FullScreenPanelDataProps } from '../propTypes/FullScreenPanelDataProps';
-import { PersistentDataProps } from '../propTypes/PersistentDataProps';
 
 // providers
-import { withFullScreenPanelContext } from './providers/FullScreenPanelProvider';
-import { withPersistentDataContext } from './providers/PersistentDataProvider';
+import { FullScreenPanelContext } from './providers/FullScreenPanelProvider';
+import { PersistentDataContext } from './providers/PersistentDataProvider';
 
 //constants
 import PANEL_TYPES from '../constants/PanelTypes';
@@ -17,46 +14,58 @@ import PANEL_TYPES from '../constants/PanelTypes';
 import Button from './generics/Button';
 
 
-class CustomDiceRolls extends Component {
+const CustomDiceRolls = (props) => {
 
-    constructor(props) {
-        super(props);
+    const { onDiceRollClick } = props;
 
-        this.state = {
-            buttonsHidden: false,
-            buttonsWidth: 0, // button width in px
-        }
-        this.hideableButtonRef = React.createRef();
-    }
+    const hideableButtonRef = useRef(null); 
 
-    componentDidUpdate(prevProps) {
-        const { customRollsData, settings } = this.props.persistentData;
-        const { customRollsData: prevCustomRollsData, settings: prevSettings  } = prevProps.persistentData;
+    const [buttonsHidden, setButtonsHidden] = useState(false);
+    const [buttonsWidth, setButtonsWidth] = useState(0);
 
+    /**
+     * @type {FullScreenPanelData}
+     */
+    const fullScreenPanelData = useContext(FullScreenPanelContext);
 
-        // checks if the custom dice rolls has changed or the ui scale has changed and if so recalculates the buttons width
-        if (customRollsData !== prevCustomRollsData || settings.fontSizeMulti != prevSettings.fontSizeMulti) {
-            this.updateButtonsWidth();
-        }
-    }
+    /**
+     * @type {PersistentData}
+     */
+    const persistentData = useContext(PersistentDataContext);
+    const { customRollsData } = persistentData;
 
+    /** 
+     * @description
+     * updates button width when the font size multi changes
+     */
+    useEffect(() => {
+        updateButtonsWidth();
 
-    componentDidMount() {
-        this.updateButtonsWidth();
-        window.addEventListener('resize', this.updateButtonsWidth);
-    }
+    }, [persistentData.settings.fontSizeMulti, persistentData.customRollsData]);
 
-    componentWillUnmount() {
-        window.removeEventListener('resize', this.updateButtonsWidth);
-    }
+    /**
+     * @description
+     * adds listener when components loads and removes listener when component unloads
+     */
+    useEffect(() => {
+
+        // onload
+        updateButtonsWidth();
+        window.addEventListener('resize', updateButtonsWidth);
+
+        //on unload
+        return () => {
+            window.removeEventListener('resize', updateButtonsWidth);
+        };
+    }, []);
 
     /**
      * @description
      * handles when the browser window resizes
      */
-    updateButtonsWidth = () => {
-        if (this.hideableButtonRef.current !== null) {
-            this.setState({ buttonsWidth: this.hideableButtonRef.current.scrollWidth });
+    const updateButtonsWidth = () => {
+        if (hideableButtonRef.current !== null) {
+            setButtonsWidth(hideableButtonRef.current.scrollWidth);
         }
     }
 
@@ -66,9 +75,9 @@ class CustomDiceRolls extends Component {
      * @param {Array<number>} diceRollArray
      * @param {string} customResultCalculation
      */
-    handleRollDiceClick = (diceRollArray, customResultCalculation) => {
-        if (this.props !== null && typeof this.props.onDiceRollClick === 'function') {
-            this.props.onDiceRollClick(diceRollArray, customResultCalculation);
+    const handleRollDiceClick = (diceRollArray, customResultCalculation) => {
+        if (onDiceRollClick === 'function') {
+            onDiceRollClick(diceRollArray, customResultCalculation);
         }
     }
 
@@ -76,9 +85,8 @@ class CustomDiceRolls extends Component {
      * @description
      * handles the change in button visibility
      */
-    handleChangeVisibilityClick = () => {
-        const { buttonsHidden } = this.state;
-        this.setState({ buttonsHidden: !buttonsHidden });
+    const handleChangeVisibilityClick = () => {
+        setButtonsHidden(!buttonsHidden);
     }
 
     /**
@@ -86,55 +94,26 @@ class CustomDiceRolls extends Component {
      * returns the style for the hideable buttons container
      * @returns { {left: number} }
      */
-    getOffset() {
-        const { buttonsHidden, buttonsWidth } = this.state;
+    const offset = useMemo(() => {
         if (buttonsHidden === false) {
             return {};
         }
         else {
             return { marginRight: `calc(${-buttonsWidth}px - 1em)` };
         }
-    }
-
-    /**
-     * @description
-     * shows the create custom roll panel
-     */
-    handleShowCreateCustomRollPanel = (index) => {
-        const { persistentData, fullScreenPanelData } = this.props;
-        const { customRollsData } = persistentData;
-
-        //creating new custom roll
-        if (index === -1) {
-            fullScreenPanelData.showPanel(PANEL_TYPES.CREATE_CUSTOM_ROLL_PANEL, {
-                createNew: true,
-                index: null,
-            });
-        }
-        // editing existing custom roll
-        else {
-            fullScreenPanelData.showPanel(PANEL_TYPES.CREATE_CUSTOM_ROLL_PANEL, {
-                createNew: false,
-                customRollData: customRollsData[index],
-                index,
-            });
-        }
-    }
-
-    render() {
-        const { buttonsHidden } = this.state;
-        const { persistentData, fullScreenPanelData } = this.props;
-        const { customRollsData } = persistentData;
+    }, [buttonsHidden, buttonsWidth]);
 
 
-        const customRollsButtons = [];
+    // creates custom roll buttons
+    const customRollButtons = useMemo(() => {
+        const newCustomRollsButtons = [];
         customRollsData.forEach((customRollData, index) => {
             if (!customRollData.hidden) {
-                customRollsButtons.push(
+                newCustomRollsButtons.push(
                     <div className='custom-roll-row' key={index}>
                         <Button
                             className='button-long'
-                            onClick={() => { this.handleRollDiceClick(customRollData.diceRollArray, customRollData.customResultCalculation); }}
+                            onClick={() => { handleRollDiceClick(customRollData.diceRollArray, customRollData.customResultCalculation); }}
                         >
                             <span>{customRollData.name}</span>
                         </Button>
@@ -142,32 +121,32 @@ class CustomDiceRolls extends Component {
                 );
             }
         });
+        return newCustomRollsButtons;
+    }, [customRollsData]);
 
-        return (
-            <div className='custom-dice-rolls'>
-                <Button
-                    className='hide-show-button no-shrink'
-                    onClick={this.handleChangeVisibilityClick}
-                    icon={buttonsHidden ? 'chevron-left' : 'chevron-right'}
-                />
-                <div ref={this.hideableButtonRef} className='hideable-buttons-container' style={this.getOffset()}>
-                    <div className='edit-buttons-row'>
-                        <Button icon='edit' onClick={() => { fullScreenPanelData.showPanel(PANEL_TYPES.SELECT_EDIT_CUSTOM_ROLL_PANEL); }} />
-                    </div>
-                    <Button className='button-long' onClick={() => { this.handleRollDiceClick([20, 20], 'MAX(@D, @D)'); }}><span>Roll Advantage</span></Button>
-                    <Button className='button-long' onClick={() => { this.handleRollDiceClick([20, 20], 'MIN(@D, @D)'); }}><span>Roll Disadvantage</span></Button>
-                    {customRollsButtons}
+
+    return (
+        <div className='custom-dice-rolls'>
+            <Button
+                className='hide-show-button no-shrink'
+                onClick={handleChangeVisibilityClick}
+                icon={buttonsHidden ? 'chevron-left' : 'chevron-right'}
+            />
+            <div ref={hideableButtonRef} className='hideable-buttons-container' style={offset}>
+                <div className='edit-buttons-row'>
+                    <Button icon='edit' onClick={() => { fullScreenPanelData.showPanel(PANEL_TYPES.SELECT_EDIT_CUSTOM_ROLL_PANEL); }} />
                 </div>
+                <Button className='button-long' onClick={() => { handleRollDiceClick([20, 20], 'MAX(@D, @D)'); }}><span>Roll Advantage</span></Button>
+                <Button className='button-long' onClick={() => { handleRollDiceClick([20, 20], 'MIN(@D, @D)'); }}><span>Roll Disadvantage</span></Button>
+                {customRollButtons}
             </div>
-        );
-    }
+        </div>
+    );
 }
 
 CustomDiceRolls.propTypes = {
     onDiceRollClick: PropTypes.func.isRequired,
-    fullScreenPanelData: PropTypes.shape(FullScreenPanelDataProps).isRequired,
-    persistentData: PropTypes.shape(PersistentDataProps).isRequired,
 };
 
 
-export default withPersistentDataContext(withFullScreenPanelContext(CustomDiceRolls));
+export default CustomDiceRolls;
