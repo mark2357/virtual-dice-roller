@@ -66,6 +66,9 @@ const calculateCustomDiceRollResult = (diceRollArray, customResultCalculation) =
  * @returns {number}
  */
 const _executeOperation = (total, currentOperation, currentStr) => {
+    if(isNaN(parseInt(currentStr)))
+        return total;
+        
     if (currentOperation === '-') {
         total -= parseInt(currentStr);
         currentStr = '';
