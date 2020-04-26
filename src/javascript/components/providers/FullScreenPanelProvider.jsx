@@ -79,6 +79,8 @@ FullScreenPanelProvider.propTypes = {
 };
 
 
+// used to allow components to have context data added to props without having to use the consumer in the parent component
+// e.g. export default withPersistentDataContext(buttonComponent);
 const withFullScreenPanelContext = (Component) => {
     // eslint-disable-next-line react/display-name
     return props => (

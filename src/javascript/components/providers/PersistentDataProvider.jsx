@@ -83,11 +83,11 @@ class PersistentDataProvider extends Component {
 
                 // checks to make sure data is the correct type
                 if(typeof customDiceRoll.name !== 'string') customDiceRoll.name = defaultCustomDiceRoll.name;
-                if(Array.isArray(customDiceRoll.diceRollArray) === false || customDiceRoll.diceRollArray.every((num) => typeof num === 'number' )) customDiceRoll.diceRollArray = defaultCustomDiceRoll.diceRollArray;
+                if(Array.isArray(customDiceRoll.diceRollArray) === false || !customDiceRoll.diceRollArray.every((num) => typeof num === 'number' )) customDiceRoll.diceRollArray = defaultCustomDiceRoll.diceRollArray;
                 if(typeof customDiceRoll.customResultCalculation !== 'string') customDiceRoll.customResultCalculation = defaultCustomDiceRoll.customResultCalculation;
                 if(typeof customDiceRoll.hidden !== 'boolean') customDiceRoll.hidden = defaultCustomDiceRoll.hidden;
 
-
+                
                 data[i] = customDiceRoll;
             }
             return data;
@@ -144,6 +144,8 @@ PersistentDataProvider.propTypes = {
 };
 
 
+// used to allow components to have context data added to props without having to use the consumer in the parent component
+// e.g. export default withPersistentDataContext(buttonComponent);
 const withPersistentDataContext = (Component) => {
     // eslint-disable-next-line react/display-name
     return props => (

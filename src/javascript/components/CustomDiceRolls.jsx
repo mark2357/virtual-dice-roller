@@ -18,7 +18,7 @@ const CustomDiceRolls = (props) => {
 
     const { onDiceRollClick } = props;
 
-    const hideableButtonRef = useRef(null); 
+    const hideableButtonRef = useRef(null);
 
     const [buttonsHidden, setButtonsHidden] = useState(false);
     const [buttonsWidth, setButtonsWidth] = useState(0);
@@ -76,7 +76,7 @@ const CustomDiceRolls = (props) => {
      * @param {string} customResultCalculation
      */
     const handleRollDiceClick = (diceRollArray, customResultCalculation) => {
-        if (onDiceRollClick === 'function') {
+        if (typeof onDiceRollClick === 'function') {
             onDiceRollClick(diceRollArray, customResultCalculation);
         }
     }
@@ -105,24 +105,21 @@ const CustomDiceRolls = (props) => {
 
 
     // creates custom roll buttons
-    const customRollButtons = useMemo(() => {
-        const newCustomRollsButtons = [];
-        customRollsData.forEach((customRollData, index) => {
-            if (!customRollData.hidden) {
-                newCustomRollsButtons.push(
-                    <div className='custom-roll-row' key={index}>
-                        <Button
-                            className='button-long'
-                            onClick={() => { handleRollDiceClick(customRollData.diceRollArray, customRollData.customResultCalculation); }}
-                        >
-                            <span>{customRollData.name}</span>
-                        </Button>
-                    </div>
-                );
-            }
-        });
-        return newCustomRollsButtons;
-    }, [customRollsData]);
+    const customRollButtons = [];
+    customRollsData.forEach((customRollData, index) => {
+        if (!customRollData.hidden) {
+            customRollButtons.push(
+                <div className='custom-roll-row' key={index}>
+                    <Button
+                        className='button-long'
+                        onClick={() => { handleRollDiceClick(customRollData.diceRollArray, customRollData.customResultCalculation); }}
+                    >
+                        <span>{customRollData.name}</span>
+                    </Button>
+                </div>
+            );
+        }
+    });
 
 
     return (

@@ -92,7 +92,7 @@ const CreateCustomRollPanel = (props) => {
                 ...Array(d4Count).fill(4),
             ],
             customResultCalculation: customResultCalculation,
-            hidden: false,
+            hidden: customRollData.hidden,
         };
         return saveData;
     }
