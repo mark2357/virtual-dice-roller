@@ -68,7 +68,6 @@ const DiceButtons = (props) => {
      * @returns { {left: number} }
      */
     const offset = useMemo(() => {
-        console.log('getOffset');
         if (buttonsHidden === false) {
             return {};
         }
@@ -84,7 +83,7 @@ const DiceButtons = (props) => {
      * @param {number} numberOfDice
      */
     const handleRollDiceClick = (diceSides, numberOfDice) => {
-        if (onClick === 'function') {
+        if (typeof onClick === 'function') {
             const diceRollArray = Array(numberOfDice).fill(diceSides);
             onClick(diceRollArray);
         }
