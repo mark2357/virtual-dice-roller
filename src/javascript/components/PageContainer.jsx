@@ -1,5 +1,5 @@
 // modules
-import React, { Component } from 'react';
+import React from 'react';
 
 // components
 import Page from './Page.jsx';
@@ -9,26 +9,24 @@ import FullScreenPanelDisplay from './FullScreenPanelDisplay.jsx';
 import { FullScreenPanelProvider } from './providers/FullScreenPanelProvider.jsx';
 import { PersistentDataProvider, PersistentDataContext } from './providers/PersistentDataProvider.jsx';
 
-class PageContainer extends Component {
-    render() {
-        return (
-            <div className='page-container'>
-                <FullScreenPanelProvider>
-                    <PersistentDataProvider>
-                        <PersistentDataContext.Consumer>
-                            {value => (
-                                <div className='font-size-wrapper' style={{fontSize: value.settings.fontSizeMulti + 'rem'}}>
-                                    <Page />
-                                    <FullScreenPanelDisplay />
-                                </div>
-                                )
-                            }
+const PageContainer = () => {
+    return (
+        <div className='page-container'>
+            <FullScreenPanelProvider>
+                <PersistentDataProvider>
+                    <PersistentDataContext.Consumer>
+                        {value => (
+                            <div className='font-size-wrapper' style={{ fontSize: value.settings.fontSizeMulti + 'rem' }}>
+                                <Page />
+                                <FullScreenPanelDisplay />
+                            </div>
+                        )
+                        }
                     </PersistentDataContext.Consumer>
-                    </PersistentDataProvider>
-                </FullScreenPanelProvider>
-            </div>
-        );
-    }
+                </PersistentDataProvider>
+            </FullScreenPanelProvider>
+        </div>
+    );
 }
 
 export default PageContainer;
