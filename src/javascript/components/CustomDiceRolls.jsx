@@ -41,7 +41,7 @@ const CustomDiceRolls = (props) => {
     useEffect(() => {
         updateButtonsWidth();
 
-    }, [persistentData.settings.fontSizeMulti, persistentData.customRollsData]);
+    }, [persistentData.settings.fontSizeMulti, persistentData.customRollsData, persistentData.customRollsData.length]);
 
     /**
      * @description

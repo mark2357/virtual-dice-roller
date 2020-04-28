@@ -37,7 +37,8 @@ const CreateCustomRollPanel = (props) => {
     } = props;
 
     const { customRollsData } = persistentData;
-    const customRollData = customRollsData[index];
+    // is null if creating new roll
+    const customRollData = customRollsData[index] || null;
 
 
 
@@ -92,7 +93,7 @@ const CreateCustomRollPanel = (props) => {
                 ...Array(d4Count).fill(4),
             ],
             customResultCalculation: customResultCalculation,
-            hidden: customRollData.hidden,
+            hidden: customRollData !== null ? customRollData.hidden : false,
         };
         return saveData;
     }

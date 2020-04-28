@@ -13,6 +13,9 @@ import PanelFooter from '../generics/PanelFooter';
 import { PersistentDataContext } from '../providers/PersistentDataProvider';
 import { FullScreenPanelContext } from '../providers/FullScreenPanelProvider';
 
+// used to get the version number
+import packageJson from '../../../../package.json';
+
 const SettingsPanel = (props) => {
 
 
@@ -182,7 +185,9 @@ const SettingsPanel = (props) => {
                         <span className='ui-scale-span-right'>{fontSizeMulti.toFixed(2)}</span>
                     </div>
 
-                    <span> Created by: Mark Lenton</span>
+                    <span> Created by: Mark Lenton </span>
+                    <span> Version {packageJson.version} </span>
+                    
                 </div>
                 <PanelFooter>
                     <Button className='button-long' onClick={handleSaveClick}>
