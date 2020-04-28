@@ -2,6 +2,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as BABYLON from '@babylonjs/core';
+// pepjs polyfills pointer events
 import 'pepjs';
 
 class Scene extends React.Component {
@@ -14,6 +15,7 @@ class Scene extends React.Component {
 	}
 
 	componentDidMount() {
+		// sets up scene and engine
 		this.engine = new BABYLON.Engine(
 			this.canvas,
 			true,
