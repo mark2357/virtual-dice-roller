@@ -4,7 +4,7 @@
     align-items: center;
 
     .icon-reset {
-        background: #09C;
+        background: #09c;
         position: absolute;
         margin-top: 0.14em;
         font-size: 0.5em;
@@ -14,11 +14,13 @@
 }
 
 //used to allow the icon to work correctly when used inside a button
-.button:hover {
-    .camera-reset-icon {
-        .icon-reset {
-            background: transparent;
-            color: #09C;
+@media (hover: hover) {
+    .button:hover {
+        .camera-reset-icon {
+            .icon-reset {
+                background: transparent;
+                color: #09c;
+            }
         }
     }
 }

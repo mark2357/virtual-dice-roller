@@ -52,6 +52,27 @@ const SelectEditCustomRollPanel = () => {
 
     /**
      * @description
+     * changes the visibility of a custom roll
+     * @param {number} index the index of the custom roll in the custom roll array that is moving
+     * @param {bool} moveUp if the custom roll needs to be moved up or down
+     */
+    const handleChangeRollPosition = (index, moveUp) => {
+        const newCustomRollsData = [...persistentData.customRollsData];
+        const otherIndex = index + (moveUp ? -1 : 1);
+
+        if(otherIndex < 0 || otherIndex >= persistentData.customRollsData.length) return;
+
+        const rollAtIndex = newCustomRollsData[index];
+        const otherRoll = newCustomRollsData[otherIndex];
+        newCustomRollsData[index] = otherRoll;
+        newCustomRollsData[otherIndex] = rollAtIndex;
+
+        persistentData.setCustomDiceRolls(newCustomRollsData);
+    }
+
+
+    /**
+     * @description
      * returns the buttons to be displayed
      * @returns {React.Component}
      */
@@ -63,6 +84,16 @@ const SelectEditCustomRollPanel = () => {
         customRollsData.forEach((customRoll, index) => {
             buttonRows.push(
                 <div className='custom-roll-row' key={index}>
+                    <Button
+                        icon='chevron-up'
+                        onClick={ () => {handleChangeRollPosition(index, true)} }
+                        disabled={index === 0}
+                    />
+                    <Button
+                        icon='chevron-down'
+                        onClick={() => {handleChangeRollPosition(index, false)} }
+                        disabled={index === persistentData.customRollsData.length - 1}
+                    />
                     <Button
                         className='button-long name-button'
                         onClick={() => { handleEditCustomRoll(index); }}
@@ -77,9 +108,7 @@ const SelectEditCustomRollPanel = () => {
             );
 
         });
-
         return buttonRows;
-
     }
 
     return (

@@ -11,11 +11,17 @@
     cursor: pointer;
     font-size: inherit;
 
-    &:hover {
-        background: #09c;
-        color: white;
-        span {
+    &:focus {
+        outline:0;
+    }
+
+    @media (hover: hover) {
+        &:hover {
+            background: #09c;
             color: white;
+            span {
+                color: white;
+            }
         }
     }
 
@@ -28,7 +34,6 @@
         svg {
             color: #007298;
         }
-        
     }
 
     &.no-shrink {
@@ -46,12 +51,14 @@
         svg {
             color: green;
         }
-        &:hover {
-            background: green;
-            color: white;
-            span,
-            svg {
+        @media (hover: hover) {
+            &:hover {
+                background: green;
                 color: white;
+                span,
+                svg {
+                    color: white;
+                }
             }
         }
     }
@@ -61,12 +68,14 @@
         svg {
             color: red;
         }
-        &:hover {
-            background: red;
-            color: white;
-            span,
-            svg {
+        @media (hover: hover) {
+            &:hover {
+                background: red;
                 color: white;
+                span,
+                svg {
+                    color: white;
+                }
             }
         }
     }
