@@ -24,7 +24,8 @@ import {
     faEye,
     faEyeSlash,
     faCamera,
-    faSyncAlt
+    faSyncAlt,
+    faEllipsisH,
 } from '@fortawesome/free-solid-svg-icons';
 library.add(
     faChevronLeft,
@@ -41,7 +42,8 @@ library.add(
     faEye,
     faEyeSlash,
     faCamera,
-    faSyncAlt
+    faSyncAlt,
+    faEllipsisH,
 );
 
 //setup service worker

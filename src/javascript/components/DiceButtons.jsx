@@ -4,9 +4,14 @@ import PropTypes from 'prop-types';
 
 // providers
 import { PersistentDataContext } from './providers/PersistentDataProvider';
+import { FullScreenPanelContext } from './providers/FullScreenPanelProvider';
+
 
 // components
 import Button from './generics/Button';
+
+// constants
+import PANEL_TYPES from '../constants/PanelTypes';
 
 const DiceButtons = (props) => {
 
@@ -23,6 +28,11 @@ const DiceButtons = (props) => {
      * @type {PersistentData}
      */
     const persistentData = useContext(PersistentDataContext);
+
+    /**
+     * @type {FullScreenPanelData}
+     */
+    const fullScreenPanelData = useContext(FullScreenPanelContext);
 
 
     /** 
@@ -135,6 +145,7 @@ const DiceButtons = (props) => {
                 <Button onClick={() => { handleRollDiceClick(10, customNumber) }}>{customNumber} D10</Button>
                 <Button onClick={() => { handleRollDiceClick(12, customNumber) }}>{customNumber} D12</Button>
                 <Button onClick={() => { handleRollDiceClick(20, customNumber) }}>{customNumber} D20</Button>
+                <Button icon='ellipsis-h' onClick={() => { fullScreenPanelData.showPanel(PANEL_TYPES.ROLL_MULTIPLE_DICE_PANEL, {rollDiceClick: onClick}) }} />
             </div>
         </div>
     );

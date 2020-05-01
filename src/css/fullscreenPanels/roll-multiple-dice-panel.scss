@@ -1,0 +1,53 @@
+.roll-multiple-dice-panel-background {
+    .full-screen-panel-frame {
+        max-width: 25em;
+        max-height: 35em;
+        .roll-multiple-dice-panel {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+
+            .content-container {
+                display: flex;
+                flex-direction: column;
+                flex-grow: 1;
+                justify-content: center;
+                align-items: center;
+                overflow-y: auto;
+                width: calc(100% - 2em);
+                margin-left: 1em;
+                overflow-x: hidden;
+
+                // for firefox
+                scrollbar-width: thin;
+
+                //for safari and chrome
+                &::-webkit-scrollbar {
+                    width: 0.5em;
+                }
+                &::-webkit-scrollbar-track {
+                    background: #888;
+                }
+                &::-webkit-scrollbar-thumb {
+                    background: #09c;
+                }
+
+                .button-row {
+                    display: flex;
+                    width: 100%;
+                    justify-content: center;
+                }
+            }
+            .icon-wrapper {
+                > span {
+                    padding-right: 0.5em;
+                }
+                .hiding-text {
+                    @media only screen and (max-width: 28em) {
+                        display: none;
+                    }
+                }
+            }
+        }
+    }
+}

@@ -11,6 +11,7 @@ import PANEL_TYPES from '../constants/PanelTypes';
 import CreateCustomRollPanel from './fullscreenPanels/CreateCustomRollPanel';
 import SettingsPanel from './fullscreenPanels/SettingsPanel';
 import SelectEditCustomRollPanel from './fullscreenPanels/SelectEditCustomRollPanel';
+import RollMultipleDicePanel from './fullscreenPanels/RollMultipleDicePanel';
 
 
 const FullScreenPanelDisplay = () => {
@@ -20,7 +21,7 @@ const FullScreenPanelDisplay = () => {
      */
     const fullScreenPanelData = useContext(FullScreenPanelContext);
 
-    
+
     /**
      * @description
      * returns the panel that is meant to be displayed
@@ -31,9 +32,10 @@ const FullScreenPanelDisplay = () => {
                 return (<CreateCustomRollPanel {...fullScreenPanelData.panelProps} />);
             case PANEL_TYPES.SETTINGS_PANEL:
                 return (<SettingsPanel {...fullScreenPanelData.panelProps} />);
-                case PANEL_TYPES.SELECT_EDIT_CUSTOM_ROLL_PANEL:
-                    return (<SelectEditCustomRollPanel {...fullScreenPanelData.panelProps} />);
-
+            case PANEL_TYPES.SELECT_EDIT_CUSTOM_ROLL_PANEL:
+                return (<SelectEditCustomRollPanel {...fullScreenPanelData.panelProps} />);
+            case PANEL_TYPES.ROLL_MULTIPLE_DICE_PANEL:
+                return (<RollMultipleDicePanel {...fullScreenPanelData.panelProps} />);
             default:
                 return null;
         }
