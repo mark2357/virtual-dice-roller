@@ -17,7 +17,6 @@ const DiceButtons = (props) => {
 
     const hideableButtonRef = useRef(null);
 
-    const [customNumber, setCustomNumber] = useState(1);
     const [buttonsHidden, setButtonsHidden] = useState(false);
     const [buttonsWidth, setButtonsWidth] = useState(0);
 
@@ -101,28 +100,6 @@ const DiceButtons = (props) => {
 
     /**
      * @description
-     * handles changes in the number of dice being rolled
-     * @param {boolean} increase 
-     */
-    const handleCustomNumberChangeClick = (increase) => {
-
-        let newCustomNumber = customNumber;
-        if (increase) {
-            newCustomNumber++;
-        }
-        else {
-            newCustomNumber--;
-        }
-        if (newCustomNumber < 1)
-            newCustomNumber = 1;
-        else if (newCustomNumber > 50)
-            newCustomNumber = 50;
-
-        setCustomNumber(newCustomNumber);
-    };
-
-    /**
-     * @description
      * handles the change in button visibility
      */
     const handleChangeVisibilityClick = () => {
@@ -137,14 +114,12 @@ const DiceButtons = (props) => {
                 icon={buttonsHidden ? 'chevron-right' : 'chevron-left'}
             />
             <div ref={hideableButtonRef} className='hideable-buttons-container' style={offset}>
-                <Button onClick={() => { handleCustomNumberChangeClick(true); }} icon='plus' />
-                <Button onClick={() => { handleCustomNumberChangeClick(false); }} icon='minus' />
-                <Button onClick={() => { handleRollDiceClick(4, customNumber) }}>{customNumber} D4</Button>
-                <Button onClick={() => { handleRollDiceClick(6, customNumber) }}>{customNumber} D6</Button>
-                <Button onClick={() => { handleRollDiceClick(8, customNumber) }}>{customNumber} D8</Button>
-                <Button onClick={() => { handleRollDiceClick(10, customNumber) }}>{customNumber} D10</Button>
-                <Button onClick={() => { handleRollDiceClick(12, customNumber) }}>{customNumber} D12</Button>
-                <Button onClick={() => { handleRollDiceClick(20, customNumber) }}>{customNumber} D20</Button>
+                <Button onClick={() => { handleRollDiceClick(4, 1) }}>D4</Button>
+                <Button onClick={() => { handleRollDiceClick(6, 1) }}>D6</Button>
+                <Button onClick={() => { handleRollDiceClick(8, 1) }}>D8</Button>
+                <Button onClick={() => { handleRollDiceClick(10, 1) }}>D10</Button>
+                <Button onClick={() => { handleRollDiceClick(12, 1) }}>D12</Button>
+                <Button onClick={() => { handleRollDiceClick(20, 1) }}>D20</Button>
                 <Button icon='ellipsis-h' onClick={() => { fullScreenPanelData.showPanel(PANEL_TYPES.ROLL_MULTIPLE_DICE_PANEL, {rollDiceClick: onClick}) }} />
             </div>
         </div>
