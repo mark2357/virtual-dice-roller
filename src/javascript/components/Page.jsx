@@ -72,6 +72,9 @@ class Page extends Component {
         this.shadowLight = null; // the light that is used to cast shadows
         this.diceRollTotalCounter = new DiceRollTotalCounter(this.getDiceInstanceArray, this.displayRollResult);
         this.camera = null;
+
+        // stores array of physics impostors of walls and ground
+        this.wallAndGroundPhysicsImpostor = [];
     }
 
     componentDidUpdate(prevProps) {
@@ -345,6 +348,7 @@ class Page extends Component {
                 case 'Wall 3':
                 case 'Wall 4':
                     mesh.physicsImpostor = new BABYLON.PhysicsImpostor(mesh, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, friction: 1 }, this.scene);
+                    this.wallAndGroundPhysicsImpostor.push(mesh.physicsImpostor);
                     break;
             }
         });
@@ -487,6 +491,49 @@ class Page extends Component {
 
             colliderInstance.physicsImpostor.setLinearVelocity(linearVelocity);
             colliderInstance.physicsImpostor.setAngularVelocity(calcRandomVectorBetween(velocityAngularMin, velocityAngularMax));
+
+            console.log(this.wallAndGroundPhysicsImpostor[3].object.id);
+            let lastSoundPlayed = 0;
+
+
+            let rollSound = new BABYLON.Sound("rollSound", "./assets/sound.wav", this.scene);
+
+
+            let prevAngularVelocity = colliderInstance.physicsImpostor.physicsBody.getAngularVelocity()
+
+            console.log(colliderInstance.physicsImpostor.physicsBody.getCollisionShape());
+            console.log(colliderInstance.physicsImpostor.physicsBody.getCollisionFlags());
+
+            colliderInstance.physicsImpostor.registerOnPhysicsCollide(this.wallAndGroundPhysicsImpostor[3], (collider, collidedAgainst) => {
+
+                if (collider.physicsBody.getAngularVelocity().length() > 0.1 || collider.physicsBody.getAngularVelocity().length() > 0.1) {
+
+                    const angularVelocity = collider.physicsBody.getAngularVelocity();
+                    // console.log(Math.abs (prevAngularVelocity.x - angularVelocity.x()), prevAngularVelocity.x, angularVelocity.x());
+
+                    const threshold = 1;
+
+                    if(Math.abs (prevAngularVelocity.x - angularVelocity.x()) > threshold || 
+                        Math.abs (prevAngularVelocity.y - angularVelocity.y()) > threshold || 
+                        Math.abs (prevAngularVelocity.z - angularVelocity.z()) > threshold) {
+
+                            console.log(collider.physicsBody.getCollisionFlags());
+
+                            let output = '';
+                            if(Math.abs (prevAngularVelocity.x - angularVelocity.x()) > threshold) output += 'x: ' + Math.abs (prevAngularVelocity.x - angularVelocity.x());
+                            if(Math.abs (prevAngularVelocity.y - angularVelocity.y()) > threshold) output += 'y: ' + Math.abs (prevAngularVelocity.y - angularVelocity.y());
+                            if(Math.abs (prevAngularVelocity.z - angularVelocity.z()) > threshold) output += 'z: ' + Math.abs (prevAngularVelocity.z - angularVelocity.z());
+
+                        console.log(`Play Collision Sound ${output}`);
+                        // lastSoundPlayed = Date.now();
+                        rollSound.play();
+                    }
+
+                    prevAngularVelocity = new BABYLON.Vector3(angularVelocity.x(), angularVelocity.y(), angularVelocity.z());
+                }
+
+            });
+
             this.diceInstanceArray.push(colliderInstance);
         }
     }
